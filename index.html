@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#020611">
+<title>VENOM GAMING</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --blue: #00aaff;
+    --bright: #75eaff;
+    --dark: #020611;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--dark);
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse at 50% 30%,
+        #004d9633,
+        transparent 65%
+    );
+    z-index: -1;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 5%;
+    background: #030814;
+    border-bottom: 1px solid #087ac0;
+    box-shadow: 0 0 25px #007bff22;
+    position: relative;
+    z-index: 5;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.brand-icon {
+    font-size: clamp(28px, 6vw, 43px);
+    filter: drop-shadow(0 0 12px var(--blue));
+    animation: logoShake 4s infinite;
+}
+
+.brand-name {
+    color: var(--bright);
+    font-size: clamp(17px, 4vw, 29px);
+    font-weight: 1000;
+    letter-spacing: 1px;
+    text-shadow: 0 0 18px #008cff;
+    animation: logoGlow 2s infinite alternate;
+}
+
+@keyframes logoGlow {
+    from { text-shadow: 0 0 5px #008cff; }
+    to {
+        text-shadow:
+            0 0 24px #00aaff,
+            0 0 38px #0066ff;
+    }
+}
+
+@keyframes logoShake {
+    0%, 92%, 100% { transform: translateX(0); }
+    94% { transform: translateX(-2px); }
+    96% { transform: translateX(2px); }
+    98% { transform: translateX(-1px); }
+}
+
+.hero {
+    min-height: 490px;
+    padding: 65px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: radial-gradient(
+        ellipse at center,
+        #003d7b66,
+        transparent 65%
+    );
+}
+
+.hero h1 {
+    font-size: clamp(48px, 12vw, 100px);
+    color: #eafaff;
+    letter-spacing: 4px;
+    font-weight: 1000;
+    text-shadow:
+        0 0 10px #00aaff,
+        0 0 35px #0077ff,
+        0 0 65px #004cff;
+    animation: titleEnter 1.2s ease both;
+}
+
+.hero p {
+    margin-top: 18px;
+    color: #a9dfff;
+    letter-spacing: 2px;
+}
+
+.hero-dragon {
+    font-size: clamp(65px, 15vw, 110px);
+    filter: drop-shadow(0 0 24px #008cff);
+    animation: dragonFloat 3s ease-in-out infinite;
+}
+
+@keyframes dragonFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+@keyframes titleEnter {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.line {
+    width: min(300px, 75%);
+    height: 2px;
+    margin: 25px auto;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--bright),
+        transparent
+    );
+    box-shadow: 0 0 20px var(--blue);
+}
+
+/* ومضات عند الاسمين */
+.name-flash {
+    animation: nameFlash 3.2s infinite;
+}
+
+.name-flash:nth-child(2) {
+    animation-delay: .7s;
+}
+
+@keyframes nameFlash {
+    0%, 86%, 92%, 100% {
+        filter: brightness(1);
+    }
+    88%, 90% {
+        filter: brightness(2.8);
+        text-shadow:
+            0 0 15px white,
+            0 0 35px var(--blue),
+            0 0 65px #0066ff;
+    }
+}
+
+/* البرق */
+.lightning {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0;
+    background: #c7f3ff;
+    clip-path: polygon(
+        73% 0, 79% 0, 58% 38%,
+        67% 38%, 35% 100%, 47% 52%,
+        38% 52%
+    );
+}
+
+.lightning.flash {
+    animation: lightningFlash .5s ease-out;
+}
+
+@keyframes lightningFlash {
+    0% { opacity: 0; }
+    10% { opacity: .9; }
+    22% { opacity: .05; }
+    38% { opacity: .65; }
+    100% { opacity: 0; }
+}
+
+/* مقدمة الموقع */
+.intro {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background:
+        radial-gradient(ellipse at center, #071c3b, #01030b 75%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    text-align: center;
+    padding: 20px;
+    transition: opacity .8s, visibility .8s;
+}
+
+.intro.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.intro-title {
+    font-size: clamp(25px, 7vw, 48px);
+    color: var(--bright);
+    text-shadow: 0 0 25px var(--blue);
+    margin-bottom: 35px;
+}
+
+.intro-icon {
+    font-size: clamp(75px, 20vw, 130px);
+    filter: drop-shadow(0 0 25px #168cff);
+    animation: introPulse 2s ease-in-out infinite;
+}
+
+@keyframes introPulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 15px #168cff);
+    }
+    50% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 35px #168cff);
+    }
+}
+
+.intro-hint {
+    margin-top: 30px;
+    color: #91cfff;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.8;
+}
+
+.enter-button {
+    margin-top: 24px;
+    padding: 13px 28px;
+    border: 1px solid var(--bright);
+    border-radius: 30px;
+    color: white;
+    background: #062044;
+    box-shadow: 0 0 20px #007bff44;
+    font-size: 16px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.enter-button:hover {
+    background: #0a3768;
+    box-shadow: 0 0 30px #008cff88;
+}
+
+/* اهتزاز خفيف */
+body.shake {
+    animation: screenShake .3s;
+}
+
+@keyframes screenShake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-3px, 2px); }
+    40% { transform: translate(3px, -2px); }
+    60% { transform: translate(-2px, -1px); }
+    80% { transform: translate(2px, 1px); }
+}
+
+.games {
+    padding: 35px 5% 70px;
+}
+
+.games h2 {
+    color: var(--bright);
+    margin-bottom: 25px;
+    border-right: 4px solid var(--blue);
+    padding-right: 12px;
+    font-size: 25px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.card {
+    height: 155px;
+    border: 1px solid #075a99;
+    border-radius: 12px;
+    background:
+        radial-gradient(
+            ellipse at top right,
+            #07315a,
+            transparent 70%
+        ),
+        #050a14;
+    position: relative;
+    overflow: hidden;
+    transition: .3s;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 45%;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--bright)
+    );
+    box-shadow: 0 0 12px var(--blue);
+}
+
+.card:hover {
+    border-color: var(--bright);
+    box-shadow: 0 0 25px #007bff44;
+    transform: translateY(-4px);
+}
+
+footer {
+    padding: 25px 15px;
+    text-align: center;
+    color: #8db8da;
+    border-top: 1px solid #075a99;
+}
+
+/* زر الصوت */
+.sound-button {
+    position: fixed;
+    bottom: 18px;
+    left: 18px;
+    z-index: 110;
+    border: 1px solid #168cff;
+    border-radius: 30px;
+    background: #061426;
+    color: white;
+    padding: 12px 17px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #007bff44;
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 15px 3%;
+        gap: 6px;
+    }
+
+    .brand {
+        gap: 5px;
+    }
+
+    .brand-name {
+        letter-spacing: 0;
+    }
+
+    .hero {
+        min-height: 410px;
+    }
+
+    .grid {
+        gap: 12px;
+    }
+
+    .card {
+        height: 125px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .brand-icon,
+    .brand-name,
+    .hero h1,
+    .hero-dragon,
+    .intro-icon {
+        animation-duration: 4s;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- مقدمة الدخول -->
+<div class="intro" id="intro">
+    <div class="intro-title">
+        <span class="name-flash">VENOM</span>
+        ×
+        <span class="name-flash">DRAGON</span>
+    </div>
+
+    <div class="intro-icon">⚡</div>
+
+    <div class="intro-hint">
+        استعد للدخول إلى عالم VENOM
+        <br>
+        اضغط للدخول وتشغيل المؤثرات
+    </div>
+
+    <button class="enter-button" id="enterButton">
+        دخول الموقع ⚡
+    </button>
+</div>
+
+<div class="lightning" id="lightning"></div>
+
+<header>
+    <div class="brand">
+        <span class="brand-icon">😈</span>
+        <span class="brand-name name-flash">VENOM</span>
+    </div>
+
+    <div class="brand">
+        <span class="brand-icon">🐉</span>
+        <span class="brand-name name-flash">DRAGON</span>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-dragon">🐉</div>
+
+    <h1 class="name-flash">VENOM</h1>
+
+    <div class="line"></div>
+
+    <p>⚡ ENTER THE BATTLE ⚡</p>
+</section>
+
+<section class="games">
+    <h2>🎮 مكتبة الألعاب</h2>
+
+    <div class="grid">
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+    </div>
+</section>
+
+<footer>
+    VENOM × DRAGON 🐉
+</footer>
+
+<button class="sound-button" id="soundButton">
+    🔊 تشغيل الصوت
+</button>
+
+<script>
+const intro = document.getElementById("intro");
+const lightning = document.getElementById("lightning");
+const soundButton = document.getElementById("soundButton");
+const enterButton = document.getElementById("enterButton");
+
+let audioContext = null;
+let soundEnabled = false;
+let lightningTimer = null;
+
+function getAudioContext() {
+    if (!audioContext) {
+        const AudioCtx =
+            window.AudioContext || window.webkitAudioContext;
+
+        if (AudioCtx) {
+            audioContext = new AudioCtx();
+        }
+    }
+
+    return audioContext;
+}
+
+/* صوت رعد اصطناعي من المتصفح، لا يحتاج ملف خارجي */
+function playThunder() {
+    if (!soundEnabled) return;
+
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    if (ctx.state === "suspended") {
+        ctx.resume();
+    }
+
+    const duration = 1.1;
+    const bufferSize = Math.floor(ctx.sampleRate * duration);
+    const buffer = ctx.createBuffer(
+        1,
+        bufferSize,
+        ctx.sampleRate
+    );
+
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+        const fade = 1 - i / bufferSize;
+        data[i] = (Math.random() * 2 - 1) * fade;
+    }
+
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(180, ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(
+        55,
+        ctx.currentTime + duration
+    );
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.001, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(
+        0.35,
+        ctx.currentTime + 0.08
+    );
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        ctx.currentTime + duration
+    );
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    noise.start();
+    noise.stop(ctx.currentTime + duration);
+}
+
+/* صوت طقطقة برق */
+function playSpark() {
+    if (!soundEnabled) return;
+
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    if (ctx.state === "suspended") {
+        ctx.resume();
+    }
+
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    oscillator.type = "sawtooth";
+    oscillator.frequency.setValueAtTime(1400, ctx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(
+        250,
+        ctx.currentTime + 0.18
+    );
+
+    gain.gain.setValueAtTime(0.07, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        ctx.currentTime + 0.2
+    );
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.2);
+}
+
+function flashLightning() {
+    lightning.classList.remove("flash");
+    void lightning.offsetWidth;
+    lightning.classList.add("flash");
+
+    if (soundEnabled) {
+        playSpark();
+
+        setTimeout(() => {
+            playThunder();
+        }, 120);
+    }
+}
+
+function startLightning() {
+    if (lightningTimer) {
+        clearInterval(lightningTimer);
+    }
+
+    lightningTimer = setInterval(() => {
+        if (Math.random() > 0.35) {
+            flashLightning();
+        }
+    }, 2600);
+}
+
+function enterSite() {
+    intro.classList.add("hidden");
+
+    soundEnabled = true;
+
+    const ctx = getAudioContext();
+
+    if (ctx && ctx.state === "suspended") {
+        ctx.resume();
+    }
+
+    soundButton.textContent = "🔊 الصوت شغال";
+
+    flashLightning();
+
+    setTimeout(flashLightning, 450);
+    setTimeout(flashLightning, 950);
+
+    startLightning();
+}
+
+enterButton.addEventListener("click", enterSite);
+
+intro.addEventListener("click", (event) => {
+    if (event.target === intro) {
+        enterSite();
+    }
+});
+
+soundButton.addEventListener("click", async () => {
+    soundEnabled = !soundEnabled;
+
+    if (soundEnabled) {
+        const ctx = getAudioContext();
+
+        if (ctx && ctx.state === "suspended") {
+            await ctx.resume();
+        }
+
+        soundButton.textContent = "🔊 الصوت شغال";
+        flashLightning();
+    } else {
+        soundButton.textContent = "🔇 الصوت مقفول";
+    }
+});
+</script>
+
+</body>
+  </html>
