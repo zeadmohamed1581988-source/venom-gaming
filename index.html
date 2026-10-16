@@ -355,6 +355,40 @@ body.shake {
     transform: translateY(-4px);
 }
 
+/* كارت لعبة */
+a.game-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+}
+
+.game-icon {
+    font-size: clamp(38px, 10vw, 54px);
+    filter: drop-shadow(0 0 14px #ff2a2a);
+}
+
+.game-name {
+    color: var(--bright);
+    font-size: clamp(15px, 4vw, 19px);
+    font-weight: bold;
+    text-shadow: 0 0 12px #008cff;
+}
+
+.game-play {
+    padding: 5px 16px;
+    border: 1px solid var(--bright);
+    border-radius: 20px;
+    background: #062044;
+    font-size: 13px;
+    box-shadow: 0 0 14px #007bff44;
+}
+
 footer {
     padding: 25px 15px;
     text-align: center;
@@ -468,7 +502,11 @@ footer {
     <h2>🎮 مكتبة الألعاب</h2>
 
     <div class="grid">
-        <div class="card"></div>
+        <a class="card game-card" href="horror.html">
+            <span class="game-icon">👹</span>
+            <span class="game-name">الممر المظلم</span>
+            <span class="game-play">▶ العب الآن</span>
+        </a>
         <div class="card"></div>
         <div class="card"></div>
         <div class="card"></div>
@@ -670,4 +708,4 @@ soundButton.addEventListener("click", async () => {
 </script>
 
 </body>
-  </html>
+</html>
