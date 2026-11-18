@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#020611">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <title>صدى في الظلام | VENOM GAMING</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -77,20 +83,20 @@ body.touch #act{left:auto;right:20px;transform:none;bottom:calc(206px + env(safe
     <li>📱 <b>الموبايل:</b> الصباع الشمال للحركة (اسحب لآخر الدايرة = جري)، اليمين للنظر.</li>
     <li>💻 <b>الكمبيوتر:</b> WASD حركة · الماوس نظر · Shift جري · F كشاف · E تفاعل.</li>
   </ul>
-  <a class="back" href="./">⬅ رجوع للموقع</a>
+  <a class="back" href="./design.html">⬅ رجوع للموقع</a>
 </div>
 
 <div id="pause" class="screen hidden">
   <h1 style="font-size:34px">وقفة</h1>
   <button id="resumeBtn" class="btn">كمّل</button>
-  <a class="back" href="./">⬅ رجوع للموقع</a>
+  <a class="back" href="./design.html">⬅ رجوع للموقع</a>
 </div>
 
 <div id="end" class="screen hidden">
   <h1 id="endTitle" class="red">اتقتلت</h1>
   <p class="sub" id="endSub"></p>
   <button id="againBtn" class="btn">حاول تاني</button>
-  <a class="back" href="./">⬅ رجوع للموقع</a>
+  <a class="back" href="./design.html">⬅ رجوع للموقع</a>
 </div>
 
 <div id="hud">
@@ -1032,5 +1038,33 @@ new GLTFLoader().load('monster.glb',
 requestAnimationFrame(frame);
 if (DEBUG) window.__g = { input, THREE, scene, camera, player, state, story, M, monster, A, startGame, loadCheckpoint, updatePlay, doInteract, INTER, levers, DOORS, setDoor, endHide, startEntity, bfs, renderer, eyeL, eyeR, updateEyes, startDeath, mBones: () => mBones };
 </script>
+
+<script>
+// Register the offline app worker on HTTPS hosting (such as GitHub Pages).
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(err => console.warn('PWA worker:', err)));
+}
+// Show an install button only when the browser supports the install prompt.
+let venomInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  venomInstallPrompt = event;
+  if (document.getElementById('venomInstallBtn') || window.matchMedia('(display-mode: standalone)').matches) return;
+  const button = document.createElement('button');
+  button.id = 'venomInstallBtn';
+  button.type = 'button';
+  button.textContent = '⬇ تثبيت VENOM GAMING';
+  button.style.cssText = 'position:fixed;z-index:9999;right:16px;bottom:88px;padding:12px 18px;border:1px solid #c084fc;border-radius:24px;background:linear-gradient(90deg,#5b21b6,#9333ea);color:white;font-weight:800;font-size:14px;box-shadow:0 0 18px #9333ea88';
+  button.addEventListener('click', async () => {
+    if (!venomInstallPrompt) return;
+    venomInstallPrompt.prompt();
+    await venomInstallPrompt.userChoice;
+    venomInstallPrompt = null;
+    button.remove();
+  });
+  document.body.appendChild(button);
+});
+</script>
+
 </body>
 </html>

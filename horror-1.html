@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#020611">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <meta name="theme-color" content="#000000">
 <title>الممر المظلم</title>
 <style>
@@ -511,10 +517,10 @@ function showScreen(kind){
 <p class="lead">اتحبست جوه متاهة مظلمة، وفيها وحوش مش هترحمك.</p>
 <ul><li>📜 اجمع ٦ صفحات عشان باب الخروج يتفتح.</li><li>👹 ٤ وحوش: الطويل بيشوف الكشاف، الزاحف سريع، الجزّار أعمى بس بيسمع، والتمثال بيتحرك لما ماتبصش عليه.</li><li>🏃 الجري بيعمل صوت، والوقوف ساكت بيخبّيك.</li><li>🔦 البطارية بتخلص، دوّر على بطاريات.</li><li>📱 العصا الشمال للحركة، واسحب على اليمين عشان تبص حواليك.</li><li>⌨️ كيبورد: WASD + الأسهم، Shift جري، F كشاف.</li></ul>
 <div class="warn">تحذير: فيها ومضات ضوء وصراخ ومشاهد مخيفة جدًا. الأحسن تلعب بسماعة وفي الأفقي.</div>
-<button class="big" data-act="start">ابدأ اللعب</button><a class="back" href="./">الرجوع للموقع</a>`;
-  else if(kind==='pause')h=`<h1>اللعبة واقفة</h1><button class="big" data-act="resume">كمّل</button><a class="back" href="./">الرجوع للموقع</a>`;
-  else if(kind==='dead')h=`<h1 class="red">اتمسكت</h1><p class="lead">${catcherName?'مسكك '+catcherName+'. ':''}جمعت ${pages} من ${TP} صفحات.</p><button class="big" data-act="start">حاول تاني</button><a class="back" href="./">الرجوع للموقع</a>`;
-  else if(kind==='won')h=`<h1>هربت!</h1><p class="lead">خلصتها في ${fmt(time)}.</p><button class="big" data-act="start">العب تاني</button><a class="back" href="./">الرجوع للموقع</a>`;
+<button class="big" data-act="start">ابدأ اللعب</button><a class="back" href="./design.html">الرجوع للموقع</a>`;
+  else if(kind==='pause')h=`<h1>اللعبة واقفة</h1><button class="big" data-act="resume">كمّل</button><a class="back" href="./design.html">الرجوع للموقع</a>`;
+  else if(kind==='dead')h=`<h1 class="red">اتمسكت</h1><p class="lead">${catcherName?'مسكك '+catcherName+'. ':''}جمعت ${pages} من ${TP} صفحات.</p><button class="big" data-act="start">حاول تاني</button><a class="back" href="./design.html">الرجوع للموقع</a>`;
+  else if(kind==='won')h=`<h1>هربت!</h1><p class="lead">خلصتها في ${fmt(time)}.</p><button class="big" data-act="start">العب تاني</button><a class="back" href="./design.html">الرجوع للموقع</a>`;
   scr.innerHTML='<div class="box">'+h+'</div>';scr.classList.add('show');
 }
 scr.addEventListener('click',e=>{
@@ -979,5 +985,33 @@ resize();newGame();showScreen('menu');
 requestAnimationFrame(frame);
 })();
 </script>
+
+<script>
+// Register the offline app worker on HTTPS hosting (such as GitHub Pages).
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(err => console.warn('PWA worker:', err)));
+}
+// Show an install button only when the browser supports the install prompt.
+let venomInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  venomInstallPrompt = event;
+  if (document.getElementById('venomInstallBtn') || window.matchMedia('(display-mode: standalone)').matches) return;
+  const button = document.createElement('button');
+  button.id = 'venomInstallBtn';
+  button.type = 'button';
+  button.textContent = '⬇ تثبيت VENOM GAMING';
+  button.style.cssText = 'position:fixed;z-index:9999;right:16px;bottom:88px;padding:12px 18px;border:1px solid #c084fc;border-radius:24px;background:linear-gradient(90deg,#5b21b6,#9333ea);color:white;font-weight:800;font-size:14px;box-shadow:0 0 18px #9333ea88';
+  button.addEventListener('click', async () => {
+    if (!venomInstallPrompt) return;
+    venomInstallPrompt.prompt();
+    await venomInstallPrompt.userChoice;
+    venomInstallPrompt = null;
+    button.remove();
+  });
+  document.body.appendChild(button);
+});
+</script>
+
 </body>
 </html>
