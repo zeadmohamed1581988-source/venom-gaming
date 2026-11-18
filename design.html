@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VENOM GAMING</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Anton&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07060d;--card:#12101d;--line:#2a2347;--p:#7c3aed;--p2:#a855f7}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#fff;font-family:'Tajawal',sans-serif}
+.app{display:flex;direction:ltr;min-height:100vh}
+.side{display:none;width:240px;flex-shrink:0;background:#0a0814;padding:16px;flex-direction:column;border-right:1px solid #1d1833;direction:rtl;position:sticky;top:0;height:100vh}
+@media(min-width:900px){.side{display:flex}}
+.side .logo{width:100%;border-radius:20px;margin-bottom:16px}
+.nav a{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:18px;background:#14111f;color:#fff;text-decoration:none;margin-bottom:10px;border:1px solid #241d3d;font-weight:700}
+.nav a.on{background:linear-gradient(90deg,#5b21b6,#7c3aed);box-shadow:0 0 18px #7c3aed88}
+.play{margin-top:auto;text-align:center;font-family:'Anton',sans-serif;font-style:italic;font-size:36px;line-height:1;color:var(--p);text-shadow:0 0 14px var(--p2)}
+main{flex:1;min-width:0;padding:14px 14px 110px;direction:rtl}
+.top{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.search{flex:1;display:flex;align-items:center;gap:8px;background:#100d1b;border:1px solid var(--line);border-radius:30px;padding:10px 16px}
+.search input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font-family:inherit;font-size:15px}
+.ic{font-size:24px}
+.banner{position:relative;direction:ltr;border-radius:24px;overflow:hidden;min-height:210px;border:1px solid #4c3a96;box-shadow:0 0 22px #5b21b655;background:url('file_000000008b74820ab6f97f672f3dbb3d.png') left center/cover no-repeat;display:flex;align-items:center;justify-content:flex-end;padding:18px}
+.banner::before{content:"";position:absolute;inset:0;background:linear-gradient(270deg,#07060dcc 0%,transparent 70%)}
+.bt{position:relative;z-index:1;text-align:center;direction:rtl}
+.v1{font-family:'Anton',sans-serif;font-style:italic;font-size:44px;line-height:1;color:#e5e7eb;text-shadow:0 0 12px #000}
+.v2{font-family:'Anton',sans-serif;font-style:italic;font-size:40px;line-height:1;color:#c026d3;text-shadow:0 0 14px #a855f7}
+.bt p{margin:8px 0 12px;font-weight:900;font-size:19px}
+.go{display:inline-block;padding:10px 22px;border-radius:30px;border:2px solid var(--p);background:#14102b;color:#fff;text-decoration:none;font-weight:700;box-shadow:0 0 14px #7c3aed88}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:-18px;position:relative;z-index:2}
+.dots i{width:14px;height:10px;border-radius:6px;background:#3b3558}
+.dots i:first-child{width:26px;background:var(--p)}
+.sec-h{display:flex;justify-content:space-between;align-items:center;margin:26px 0 12px}
+.sec-h h2{margin:0;font-size:22px;border-right:4px solid var(--p);padding-right:10px}
+.all{background:#14111f;border:1px solid var(--line);color:#fff;border-radius:20px;padding:7px 16px;font-family:inherit;font-size:14px}
+.row{display:grid;grid-auto-flow:column;grid-auto-columns:150px;gap:12px;overflow-x:auto;padding-bottom:6px}
+@media(min-width:700px){.row{grid-auto-flow:row;grid-template-columns:repeat(3,1fr);grid-auto-columns:auto}}
+.card{position:relative;border-radius:22px;background:var(--card);border:1px solid var(--line);overflow:hidden;text-align:center;padding-bottom:12px;box-shadow:0 0 14px #5b21b633}
+.card img{width:100%;height:150px;object-fit:cover;display:block}
+.card.mini img{height:110px}
+.card h3{margin:10px 6px 2px;font-size:17px}
+.card p{margin:0 0 10px;color:#9a93b8;font-size:13px}
+.btn{display:block;margin:0 10px;padding:10px;border-radius:16px;background:linear-gradient(90deg,#5b21b6,#7c3aed);color:#fff;text-decoration:none;font-weight:700;font-size:14px}
+.new{position:absolute;top:8px;right:8px;background:var(--p);color:#fff;border-radius:14px;padding:3px 10px;font-size:12px;font-weight:700}
+.bottom{position:fixed;bottom:0;left:0;right:0;z-index:10;display:flex;justify-content:space-around;background:#0d0a1a;border-top:2px solid #3b2a7a;border-radius:26px 26px 0 0;padding:10px 0 12px;direction:rtl}
+@media(min-width:900px){.bottom{left:240px}}
+.bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;color:#a9a3c7;text-decoration:none;font-size:13px;font-weight:700}
+.bottom a span{font-size:26px}
+.bottom a.on{color:#fff;text-shadow:0 0 12px var(--p2)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="side">
+  <img class="logo" src="file_000000005138820aa8792ad72d9db0fb.png" alt="VENOM GAMING">
+  <nav class="nav">
+    <a class="on" href="#">🏠 الرئيسية</a>
+    <a href="#games">🎮 الألعاب</a>
+    <a href="#">⬇️ التنزيلات</a>
+    <a href="#">⭐ المفضلة</a>
+    <a href="#">⚙️ الإعدادات</a>
+    <a href="#">ℹ️ حول التطبيق</a>
+  </nav>
+  <div class="play">PLAY<br>MORE</div>
+</aside>
+
+<main>
+  <div class="top">
+    <div class="search"><span class="ic">🔍</span><input id="q" type="text" placeholder="ابحث عن لعبة..."></div>
+    <span class="ic">🔔</span>
+    <span class="ic">👑</span>
+  </div>
+
+  <section class="banner">
+    <div class="bt">
+      <div class="v1">VENOM</div>
+      <div class="v2">GAMING</div>
+      <p>ألعاب بلا حدود</p>
+      <a class="go" href="#games">اكتشف الألعاب ‹</a>
+    </div>
+  </section>
+  <div class="dots"><i></i><i></i><i></i><i></i></div>
+
+  <div class="sec-h" id="games"><h2>أحدث الألعاب</h2><button class="all">عرض الكل ›</button></div>
+  <div class="row">
+    <div class="card" data-name="صدى في الظلام">
+      <span class="new">★ جديدة</span>
+      <img src="file_000000005614820a8e76db7e00403475.png" alt="صدى في الظلام">
+      <h3>صدى في الظلام</h3><p>لعبة رعب</p>
+      <a class="btn" href="echo.html">⬇ تحميل اللعبة</a>
+    </div>
+    <div class="card" data-name="الممر المظلم">
+      <img src="file_000000002460820a9dacd0b234987f24.png" alt="الممر المظلم">
+      <h3>الممر المظلم</h3><p>لعبة رعب</p>
+      <a class="btn" href="#">⬇ تحميل اللعبة</a>
+    </div>
+    <div class="card" data-name="الغرفة الأخيرة">
+      <img src="file_000000005e5c820a9b0a40b58044b559.png" alt="الغرفة الأخيرة">
+      <h3>الغرفة الأخيرة</h3><p>لعبة رعب</p>
+      <a class="btn" href="#">⬇ تحميل اللعبة</a>
+    </div>
+  </div>
+
+  <div class="sec-h"><h2>🔥 الأكثر تحميلاً</h2><button class="all">عرض الكل ›</button></div>
+  <div class="row">
+    <div class="card mini" data-name="صدى في الظلام">
+      <img src="file_000000005614820a8e76db7e00403475.png" alt="">
+      <h3>صدى في الظلام</h3>
+    </div>
+    <div class="card mini" data-name="الممر المظلم">
+      <img src="file_000000002460820a9dacd0b234987f24.png" alt="">
+      <h3>الممر المظلم</h3>
+    </div>
+    <div class="card mini" data-name="الغرفة الأخيرة">
+      <img src="file_000000005e5c820a9b0a40b58044b559.png" alt="">
+      <h3>الغرفة الأخيرة</h3>
+    </div>
+  </div>
+</main>
+</div>
+
+<nav class="bottom">
+  <a class="on" href="#"><span>🏠</span>الرئيسية</a>
+  <a href="#games"><span>🎮</span>الألعاب</a>
+  <a href="#"><span>⬇️</span>التنزيلات</a>
+  <a href="#"><span>⭐</span>المفضلة</a>
+</nav>
+
+<script>
+document.getElementById('q').addEventListener('input', function () {
+  var v = this.value.trim();
+  document.querySelectorAll('.card').forEach(function (c) {
+    c.style.display = c.dataset.name.indexOf(v) > -1 ? '' : 'none';
+  });
+});
+</script>
+</body>
+    </html>
