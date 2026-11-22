@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>صدى في الظلام 2 · زياد | VENOM GAMING</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Tahoma,'Segoe UI',Arial,sans-serif;color:#f3eccc;touch-action:none}
+canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.screen{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px;background:radial-gradient(ellipse at 50% 30%,#2a2410 0%,#0c0a04 60%,#000 100%);overflow:auto}
+.screen.hidden{display:none}
+.brand{letter-spacing:6px;font-size:13px;color:#e2c45a;text-shadow:0 0 10px #8a6a10;margin-bottom:6px}
+h1{margin:4px 0 2px;font-size:46px;color:#fff3c4;text-shadow:0 0 12px #c9a22a,0 0 32px #7a5a10}
+.sub{margin:0 0 16px;color:#b9a86a;font-size:14px}
+.btn{font-family:inherit;font-size:20px;font-weight:bold;color:#fff;background:linear-gradient(#6b5a14,#3a300a);border:2px solid #d6b24a;border-radius:12px;padding:12px 38px;margin:8px;box-shadow:0 0 18px #c9a22a66;cursor:pointer}
+.btn:disabled{opacity:.45;filter:grayscale(.6)}
+.how{list-style:none;padding:0;margin:14px 0 6px;max-width:440px;font-size:13.5px;line-height:1.9;color:#cbbf8c}
+.how b{color:#f5d978}
+a.back{color:#e2c45a;font-size:14px;margin-top:10px;text-decoration:none}
+#loadwrap{width:min(320px,80vw);margin:6px 0 10px}
+#loadbar{height:8px;border-radius:5px;background:#1a160a;border:1px solid #5a4a18;overflow:hidden}
+#loadbar i{display:block;height:100%;width:3%;background:linear-gradient(90deg,#8a6a10,#f5d978);box-shadow:0 0 10px #e2c45a;transition:width .2s}
+#loadtxt{font-size:12.5px;color:#b9a86a;display:block;margin-top:6px}
+#hud{position:fixed;inset:0;z-index:13;pointer-events:none;display:none}
+#items{position:absolute;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);font-size:16px;color:#ffeaa0;text-shadow:0 0 8px #000;background:#0008;padding:4px 14px;border-radius:20px;border:1px solid #ffe6803a;max-width:80vw;text-align:center}
+#sub{position:absolute;left:0;right:0;bottom:calc(16% + env(safe-area-inset-bottom));text-align:center;font-size:19px;color:#f3eccc;text-shadow:0 0 6px #000,0 0 3px #000;padding:0 20px;opacity:0;transition:opacity .5s}
+#sub.rami{color:#ff7a6a;text-shadow:0 0 8px #000,0 0 6px #600}
+#stam{position:absolute;left:16px;bottom:calc(14px + env(safe-area-inset-bottom));width:110px;height:6px;border-radius:4px;background:#0009;border:1px solid #ffffff22;overflow:hidden}
+#stam i{display:block;height:100%;width:100%;background:#f5d978}
+#pauseBtn{position:absolute;top:calc(8px + env(safe-area-inset-top));right:10px;width:40px;height:40px;border-radius:50%;background:#0007;border:1px solid #ffffff33;color:#fff;font-size:16px;pointer-events:auto;display:none}
+#vig{position:fixed;inset:0;z-index:8;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 38%,rgba(0,0,0,.9) 100%);opacity:.8}
+#dmg{position:fixed;inset:0;z-index:9;pointer-events:none;background:radial-gradient(ellipse at center,rgba(120,0,0,0) 30%,rgba(150,0,0,.85) 100%);opacity:0}
+#flash{position:fixed;inset:0;z-index:9;pointer-events:none;background:#b00000;opacity:0}
+#touch{position:fixed;inset:0;z-index:12;display:none;pointer-events:none}
+#zoneL,#zoneR{position:absolute;top:0;bottom:0;touch-action:none;pointer-events:auto}
+#zoneL{left:0;width:46%}#zoneR{right:0;width:54%}
+#joyBase{position:absolute;width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;border:2px solid #f5d97866;background:#2a200a44;display:none;pointer-events:none}
+#joyKnob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:#f5d97888;border:2px solid #fff3c499}
+.tbtn{position:absolute;right:20px;width:70px;height:70px;border-radius:50%;background:#2a200a99;border:2px solid #f5d97888;color:#fff3c4;font-size:13px;display:flex;align-items:center;justify-content:center;font-family:inherit;touch-action:none;pointer-events:auto}
+#btnRun{bottom:calc(36px + env(safe-area-inset-bottom))}
+#btnLight{bottom:calc(122px + env(safe-area-inset-bottom))}
+.tbtn.on{background:#c9a22aaa}
+#act{position:absolute;display:none;pointer-events:auto;min-width:110px;height:54px;padding:0 20px;border-radius:27px;background:#8a6a10cc;border:2px solid #fff3c499;color:#fff;font:bold 17px Tahoma,Arial,sans-serif;left:50%;bottom:calc(26% + env(safe-area-inset-bottom));transform:translateX(-50%);box-shadow:0 0 18px #c9a22a88}
+body.touch #act{left:auto;right:20px;transform:none;bottom:calc(206px + env(safe-area-inset-bottom))}
+#fade{position:fixed;inset:0;z-index:40;background:#000;opacity:1;pointer-events:none;transition:opacity 4s}
+#endTitle{font-size:40px;margin:0 0 8px}
+.red{color:#ff4a4a;text-shadow:0 0 14px #c00,0 0 40px #800}
+.grn{color:#f5d978;text-shadow:0 0 14px #c9a22a,0 0 40px #7a5a10}
+@media (max-height:480px){h1{font-size:32px}.how{font-size:12px;line-height:1.6;margin:6px 0}.btn{padding:8px 28px;font-size:17px}}
+</style>
+<script>
+(function(){var app=location.host==='appassets.androidplatform.net';var b=app?'./lib/three/':'https://cdn.jsdelivr.net/npm/three@0.146.0/';
+var m={imports:{three:b+'build/three.module.js','three/addons/':b+'examples/jsm/'}};
+var s=document.createElement('script');s.type='importmap';s.textContent=JSON.stringify(m);document.head.appendChild(s);})();
+</script>
+</head>
+<body>
+
+<div id="menu" class="screen">
+  <div class="brand">VENOM GAMING</div>
+  <h1>صدى في الظلام 2</h1>
+  <p class="sub">الفصل التاني · زياد · الـBackrooms</p>
+  <div id="loadwrap"><div id="loadbar"><i></i></div><span id="loadtxt">جاري تجهيز المكان...</span></div>
+  <button id="startBtn" class="btn" disabled>ابدأ اللعب</button>
+  <ul class="how">
+    <li>🔦 إنت <b>زياد</b>، صحيت في أوضة صفرا لا نهاية ليها. ومين بيكلمك من الميكروفون؟</li>
+    <li>🗝️ دوّر على <b>3 مفاتيح</b> في المتاهة وافتح بيهم باب الطوارئ.</li>
+    <li>👁 فيه <b>كيان</b> بيتحرك في الممرات. لو شافك أو سمعك هيجري وراك.</li>
+    <li>📱 <b>الموبايل:</b> الصباع الشمال للحركة (اسحب لآخر الدايرة = جري)، اليمين للنظر.</li>
+    <li>💻 <b>الكمبيوتر:</b> WASD حركة · الماوس نظر · Shift جري · F كشاف · E تفاعل.</li>
+  </ul>
+  <a class="back" href="design.html">⬅ رجوع للموقع</a>
+</div>
+
+<div id="pause" class="screen hidden">
+  <h1 style="font-size:34px">وقفة</h1>
+  <button id="resumeBtn" class="btn">كمّل</button>
+  <a class="back" href="design.html">⬅ رجوع للموقع</a>
+</div>
+
+<div id="end" class="screen hidden">
+  <h1 id="endTitle" class="red">اتقتلت</h1>
+  <p class="sub" id="endSub"></p>
+  <button id="againBtn" class="btn">حاول تاني</button>
+  <a class="back" href="design.html">⬅ رجوع للموقع</a>
+</div>
+
+<div id="hud">
+  <div id="items" style="display:none"></div>
+  <div id="sub"></div>
+  <button id="act"></button>
+  <div id="stam"><i></i></div>
+  <button id="pauseBtn">❚❚</button>
+</div>
+
+<div id="touch">
+  <div id="zoneL"></div><div id="zoneR"></div>
+  <div id="joyBase"><div id="joyKnob"></div></div>
+  <div id="btnLight" class="tbtn on" style="display:none">كشاف</div>
+  <div id="btnRun" class="tbtn">جري</div>
+</div>
+
+<div id="fade"></div>
+<div id="vig"></div><div id="dmg"></div><div id="flash"></div>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const $ = id => document.getElementById(id);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const rand = (a, b) => a + Math.random() * (b - a);
+const IS_TOUCH = matchMedia('(pointer:coarse)').matches || 'ontouchstart' in window;
+const DEBUG = location.search.includes('debug');
+
+/* ====================== المتاهة ====================== */
+const C = 2.5, WALL_H = 3.0, MW = 15, MH = 11, GW = MW * 2 + 1, GH = MH * 2 + 1;
+const grid = Array.from({ length: GH }, () => Array(GW).fill(1)); // grid[row][col]
+function makeMaze() {
+  const vis = Array.from({ length: MH }, () => Array(MW).fill(false));
+  const st = [[0, 0]]; vis[0][0] = true; grid[1][1] = 0;
+  while (st.length) {
+    const [x, y] = st[st.length - 1];
+    const nb = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(d => [x + d[0], y + d[1]]).filter(([a, b]) => a >= 0 && b >= 0 && a < MW && b < MH && !vis[b][a]);
+    if (!nb.length) { st.pop(); continue; }
+    const [a, b] = nb[(Math.random() * nb.length) | 0];
+    vis[b][a] = true;
+    grid[2 * b + 1][2 * a + 1] = 0;
+    grid[(2 * y + 1 + 2 * b + 1) / 2][(2 * x + 1 + 2 * a + 1) / 2] = 0;
+    st.push([a, b]);
+  }
+  for (let k = 0; k < 70; k++) { const j = 1 + ((Math.random() * (GH - 2)) | 0), i = 1 + ((Math.random() * (GW - 2)) | 0); grid[j][i] = 0; }
+}
+makeMaze();
+const START = { i: 1, j: 1 };
+const EXIT = { i: GW - 2, j: GH - 2 };
+const isWall = (i, j) => i < 0 || j < 0 || i >= GW || j >= GH || grid[j][i] === 1;
+const cellOf = v => [Math.floor(v.x / C), Math.floor(v.z / C)];
+const cellCenter = (i, j) => new THREE.Vector3((i + 0.5) * C, 0, (j + 0.5) * C);
+const floorCells = [];
+for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) if (!grid[j][i]) floorCells.push([i, j]);
+function randomCell(minD, from) {
+  for (let k = 0; k < 400; k++) {
+    const [i, j] = floorCells[(Math.random() * floorCells.length) | 0];
+    const v = cellCenter(i, j);
+    if (Math.hypot(v.x - from.x, v.z - from.z) >= minD) return v;
+  }
+  return cellCenter(START.i, START.j);
+}
+
+/* ====================== العرض ====================== */
+const renderer = new THREE.WebGLRenderer({ antialias: !IS_TOUCH, powerPreference: 'high-performance' });
+renderer.domElement.id = 'c';
+document.body.insertBefore(renderer.domElement, document.body.firstChild);
+let pixelRatio = Math.min(window.devicePixelRatio || 1, IS_TOUCH ? 1.25 : 1.75);
+renderer.setPixelRatio(pixelRatio);
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const MAXANI = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0901);
+scene.fog = new THREE.FogExp2(0x14120a, 0.07);
+const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.05, 70);
+camera.rotation.order = 'YXZ';
+scene.add(camera);
+
+const ambient = new THREE.AmbientLight(0x8a7a40, 0.55);
+scene.add(ambient);
+const hemi = new THREE.HemisphereLight(0x8a7a40, 0x1a140a, 0.3);
+scene.add(hemi);
+
+const flash = new THREE.SpotLight(0xfff0d0, 3.2, 26, 0.52, 0.7, 1.3);
+flash.position.set(0.12, -0.08, 0);
+flash.castShadow = true;
+flash.shadow.mapSize.set(IS_TOUCH ? 512 : 1024, IS_TOUCH ? 512 : 1024);
+flash.shadow.camera.near = 0.15; flash.shadow.camera.far = 26;
+flash.shadow.bias = -0.0006; flash.shadow.normalBias = 0.03;
+camera.add(flash); camera.add(flash.target); flash.target.position.set(0, 0, -5);
+
+/* ====================== خامات ====================== */
+const mkCanvas = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+function grainify(g, w, h, amt) {
+  const id = g.getImageData(0, 0, w, h), d = id.data;
+  for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - 0.5) * amt; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+  g.putImageData(id, 0, 0);
+}
+function finishTex(c, rx, ry) {
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rx, ry); t.anisotropy = MAXANI;
+  t.encoding = THREE.sRGBEncoding;
+  return t;
+}
+function yellowWallTex() {
+  const S = 512, c = mkCanvas(S, S), g = c.getContext('2d');
+  g.fillStyle = '#a89a4a'; g.fillRect(0, 0, S, S);
+  for (let x = 0; x < S; x += 64) { g.fillStyle = 'rgba(255,250,200,0.06)'; g.fillRect(x, 0, 32, S); }
+  for (let i = 0; i < 40; i++) { const x = rand(0, S), y = rand(0, S), r = rand(20, 90); const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, 'rgba(90,70,20,0.22)'); gr.addColorStop(1, 'rgba(90,70,20,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
+  const gb = g.createLinearGradient(0, S * 0.6, 0, S); gb.addColorStop(0, 'rgba(0,0,0,0)'); gb.addColorStop(1, 'rgba(30,20,0,0.6)'); g.fillStyle = gb; g.fillRect(0, S * 0.6, S, S * 0.4);
+  grainify(g, S, S, 26);
+  return finishTex(c, 1, 1);
+}
+function carpetTex() {
+  const S = 512, c = mkCanvas(S, S), g = c.getContext('2d');
+  g.fillStyle = '#5e5230'; g.fillRect(0, 0, S, S);
+  for (let i = 0; i < 300; i++) { g.strokeStyle = `rgba(0,0,0,${rand(0.04, 0.14)})`; g.lineWidth = rand(0.5, 1.5); const x = rand(0, S), y = rand(0, S); g.beginPath(); g.moveTo(x, y); g.lineTo(x + rand(-4, 4), y + rand(10, 40)); g.stroke(); }
+  for (let i = 0; i < 12; i++) { const x = rand(0, S), y = rand(0, S), r = rand(30, 120); const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, 'rgba(40,30,10,0.35)'); gr.addColorStop(1, 'rgba(40,30,10,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
+  grainify(g, S, S, 28);
+  return finishTex(c, GW * C / 5, GH * C / 5);
+}
+function ceilTex() {
+  const S = 256, c = mkCanvas(S, S), g = c.getContext('2d');
+  g.fillStyle = '#6e6a50'; g.fillRect(0, 0, S, S);
+  g.strokeStyle = 'rgba(20,18,10,0.7)'; g.lineWidth = 3; g.strokeRect(0, 0, S, S);
+  grainify(g, S, S, 24);
+  return finishTex(c, GW * C / 5, GH * C / 5);
+}
+function grainTex() {
+  const S = 128, c = mkCanvas(S, S), g = c.getContext('2d');
+  g.fillStyle = '#b8b8b8'; g.fillRect(0, 0, S, S); grainify(g, S, S, 30);
+  return finishTex(c, 1, 1);
+}
+function glowTex() {
+  const S = 64, c = mkCanvas(S, S), g = c.getContext('2d');
+  const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(255,235,150,0.9)'); gr.addColorStop(0.4, 'rgba(255,200,80,0.25)'); gr.addColorStop(1, 'rgba(255,200,80,0)'); g.fillStyle = gr; g.fillRect(0, 0, S, S);
+  return finishTex(c, 1, 1);
+}
+const wallMat = new THREE.MeshStandardMaterial({ map: yellowWallTex(), roughness: 0.95 });
+const floorMat = new THREE.MeshStandardMaterial({ map: carpetTex(), roughness: 0.9 });
+const ceilMat = new THREE.MeshStandardMaterial({ map: ceilTex(), roughness: 1 });
+const glowT = glowTex();
+
+/* ====================== بناء العالم ====================== */
+const world = new THREE.Group(); scene.add(world);
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(GW * C, GH * C), floorMat);
+floor.rotation.x = -Math.PI / 2; floor.position.set(GW * C / 2, 0, GH * C / 2); floor.receiveShadow = true; world.add(floor);
+const ceil = new THREE.Mesh(new THREE.PlaneGeometry(GW * C, GH * C), ceilMat);
+ceil.rotation.x = Math.PI / 2; ceil.position.set(GW * C / 2, WALL_H, GH * C / 2); world.add(ceil);
+
+const wallCells = [];
+for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) if (grid[j][i]) wallCells.push([i, j]);
+const walls = new THREE.InstancedMesh(new THREE.BoxGeometry(C, WALL_H, C), wallMat, wallCells.length);
+const m4 = new THREE.Matrix4();
+wallCells.forEach(([i, j], k) => { m4.makeTranslation((i + 0.5) * C, WALL_H / 2, (j + 0.5) * C); walls.setMatrixAt(k, m4); });
+walls.castShadow = true; walls.receiveShadow = true; world.add(walls);
+
+// مفاتيح المتاهة
+const KEY_MAT = new THREE.MeshStandardMaterial({ color: 0xd4af37, emissive: 0x7a5a00, emissiveIntensity: 0.9, metalness: 0.8, roughness: 0.35 });
+const KEYS = [];
+{
+  let placed = [];
+  for (let k = 0; k < 3; k++) {
+    let p = null;
+    for (let t = 0; t < 200; t++) {
+      const c = randomCell(22, cellCenter(START.i, START.j));
+      if (Math.hypot(c.x - cellCenter(EXIT.i, EXIT.j).x, c.z - cellCenter(EXIT.i, EXIT.j).z) < 10) continue;
+      if (placed.every(q => Math.hypot(q.x - c.x, q.z - c.z) > 12)) { p = c; break; }
+    }
+    p = p || randomCell(10, cellCenter(START.i, START.j));
+    placed.push(p);
+    const g = new THREE.Group(); g.position.set(p.x, 0, p.z);
+    const key = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.05, 0.08), KEY_MAT); key.position.y = 0.9; g.add(key);
+    const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowT, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.7 }));
+    gl.scale.set(0.9, 0.9, 1); gl.position.y = 0.9; g.add(gl);
+    world.add(g);
+    KEYS.push({ g, p, got: false });
+  }
+}
+
+// باب الطوارئ
+const exitC = cellCenter(EXIT.i, EXIT.j);
+const exitMat = new THREE.MeshStandardMaterial({ color: 0x1d3a26, emissive: 0x0a3a18, emissiveIntensity: 0.8, roughness: 0.6 });
+const exitDoor = new THREE.Mesh(new THREE.BoxGeometry(0.2, 2.2, 1.4), exitMat);
+exitDoor.position.set(exitC.x, 1.1, exitC.z); world.add(exitDoor);
+const exitLight = new THREE.PointLight(0x33ff77, 0.9, 9, 1.6); exitLight.position.set(exitC.x, 2.2, exitC.z); world.add(exitLight);
+
+/* ====================== الصوت ====================== */
+const A = {
+  ctx: null, bus: null, rev: null, noise: null, ready: false, growl: null, wail: null,
+  init() {
+    if (this.ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    const ctx = this.ctx = new AC();
+    const master = ctx.createGain(); master.gain.value = 0.9;
+    const comp = ctx.createDynamicsCompressor(); master.connect(comp); comp.connect(ctx.destination);
+    this.bus = ctx.createGain(); this.bus.connect(master);
+    const conv = ctx.createConvolver(), len = ctx.sampleRate * 2.4, buf = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6); }
+    conv.buffer = buf; const rg = ctx.createGain(); rg.gain.value = 0.38; conv.connect(rg); rg.connect(master); this.rev = conv;
+    const nb = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate), nd = nb.getChannelData(0);
+    for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1; this.noise = nb;
+    this.startAmbient(); this.ready = true;
+  },
+  out(node, wet = 0.5) { node.connect(this.bus); if (wet > 0) { const w = this.ctx.createGain(); w.gain.value = wet; node.connect(w); w.connect(this.rev); } },
+  nsrc(loop = false) { const s = this.ctx.createBufferSource(); s.buffer = this.noise; s.loop = loop; return s; },
+  tone(f, type, dur, vol, o = {}) {
+    if (!this.ctx) return;
+    const c = this.ctx, t = c.currentTime + (o.delay || 0), os = c.createOscillator(), g = c.createGain();
+    os.type = type; os.frequency.setValueAtTime(f, t); if (o.to) os.frequency.exponentialRampToValueAtTime(o.to, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + (o.att || 0.01)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    os.connect(g); let last = g;
+    if (o.lp) { const f2 = c.createBiquadFilter(); f2.type = 'lowpass'; f2.frequency.value = o.lp; g.connect(f2); last = f2; }
+    if (o.pan !== undefined) { const p = c.createStereoPanner(); p.pan.value = o.pan; last.connect(p); last = p; }
+    this.out(last, o.wet === undefined ? 0.3 : o.wet); os.start(t); os.stop(t + dur + 0.05);
+  },
+  burst(dur, vol, o = {}) {
+    if (!this.ctx) return;
+    const c = this.ctx, t = c.currentTime + (o.delay || 0), s = this.nsrc(), g = c.createGain(), f = c.createBiquadFilter();
+    f.type = o.type || 'lowpass'; f.frequency.setValueAtTime(o.f || 500, t); if (o.fto) f.frequency.exponentialRampToValueAtTime(o.fto, t + dur); f.Q.value = o.q || 1;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + (o.att || 0.01)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); let last = g;
+    if (o.pan !== undefined) { const p = this.ctx.createStereoPanner(); p.pan.value = o.pan; last.connect(p); last = p; }
+    this.out(last, o.wet === undefined ? 0.3 : o.wet); s.start(t, Math.random()); s.stop(t + dur + 0.05);
+  },
+  startAmbient() {
+    const c = this.ctx;
+    for (const [f, v] of [[55, 0.1], [58.2, 0.08], [82.4, 0.03]]) { const o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.value = v; o.connect(g); this.out(g, 0.2); o.start(); }
+    const w = this.nsrc(true), bp = c.createBiquadFilter(), wg = c.createGain(); bp.type = 'bandpass'; bp.frequency.value = 420; bp.Q.value = 0.8; wg.gain.value = 0.05;
+    const lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = 0.12; lg.gain.value = 0.03; lfo.connect(lg); lg.connect(wg.gain); lfo.start();
+    w.connect(bp); bp.connect(wg); this.out(wg, 0.3); w.start();
+    // زئير الكيان (بيزيد حسب الخوف)
+    const go = c.createOscillator(), gf = c.createBiquadFilter(), gg = c.createGain(); go.type = 'sawtooth'; go.frequency.value = 44; gf.type = 'lowpass'; gf.frequency.value = 180; gg.gain.value = 0;
+    const tr = c.createOscillator(), trg = c.createGain(); tr.frequency.value = 7; trg.gain.value = 18; tr.connect(trg); trg.connect(go.frequency); tr.start();
+    go.connect(gf); gf.connect(gg); this.out(gg, 0.3); go.start(); this.growl = gg;
+    const ws = this.nsrc(true), wf = c.createBiquadFilter(), wgn = c.createGain(); wf.type = 'bandpass'; wf.frequency.value = 1700; wf.Q.value = 6; wgn.gain.value = 0;
+    const wl = c.createOscillator(), wlg = c.createGain(); wl.frequency.value = 0.4; wlg.gain.value = 500; wl.connect(wlg); wlg.connect(wf.frequency); wl.start();
+    ws.connect(wf); wf.connect(wgn); this.out(wgn, 0.5); ws.start(); this.wail = wgn;
+  },
+  setFear(f, chase) {
+    if (!this.ctx) return; const t = this.ctx.currentTime;
+    this.growl.gain.setTargetAtTime(f * f * 0.32, t, 0.3);
+    this.wail.gain.setTargetAtTime(chase ? f * 0.05 : 0, t, 0.4);
+  },
+  step(sprint) { this.burst(0.1, sprint ? 0.32 : 0.2, { f: 320 + Math.random() * 120, wet: 0.15 }); },
+  beat(v) { this.tone(68, 'sine', 0.16, v, { to: 38, wet: 0.05 }); this.tone(62, 'sine', 0.2, v * 0.7, { to: 36, delay: 0.17, wet: 0.05 }); },
+  mstep(dist, pan) { const v = clamp(0.9 / (1 + dist * 0.35), 0.03, 0.8); this.tone(52, 'sine', 0.22, v, { to: 30, pan, wet: 0.3, lp: 200 }); this.burst(0.12, v * 0.5, { f: 200, pan, wet: 0.3 }); },
+  creak() { const p = rand(-0.8, 0.8); this.tone(rand(150, 260), 'sawtooth', rand(0.7, 1.4), 0.05, { to: rand(80, 400), lp: 700, pan: p, wet: 0.6 }); },
+  thud() { const p = rand(-0.8, 0.8); this.tone(rand(55, 80), 'sine', 0.5, 0.5, { to: 28, pan: p, wet: 0.7 }); this.burst(0.3, 0.3, { f: 160, pan: p, wet: 0.7 }); },
+  whisper() { const p = rand(-0.9, 0.9); for (let i = 0; i < 4; i++) this.burst(rand(0.25, 0.5), 0.07, { type: 'bandpass', f: rand(1800, 3200), q: 5, att: 0.12, delay: i * 0.38, pan: p, wet: 0.8 }); },
+  slam() { this.tone(70, 'sine', 0.7, 0.9, { to: 26, wet: 0.7 }); this.burst(0.5, 0.7, { f: 900, fto: 100, wet: 0.7 }); },
+  sting() { for (const f of [233, 247, 311, 466]) this.tone(f, 'sawtooth', 1.6, 0.07, { to: f * 0.96, lp: 2200, att: 0.04, wet: 0.7 }); this.thud(); },
+  pickup() { this.tone(880, 'sine', 1.4, 0.12, { wet: 0.8 }); this.tone(1318, 'sine', 1.6, 0.08, { delay: 0.12, wet: 0.8 }); },
+  roar() {
+    if (!this.ctx) return; const c = this.ctx, t = c.currentTime, sh = c.createWaveShaper(), cv = new Float32Array(256);
+    for (let i = 0; i < 256; i++) { const x = i / 128 - 1; cv[i] = Math.tanh(x * 5); } sh.curve = cv;
+    const mg = c.createGain(); mg.gain.setValueAtTime(1, t); mg.gain.exponentialRampToValueAtTime(0.001, t + 2.4); sh.connect(mg); this.out(mg, 0.4);
+    for (const [f, to] of [[120, 70], [180, 90], [60, 40]]) { const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(to, t + 1.8); const g = c.createGain(); g.gain.value = 0.3; o.connect(g); g.connect(sh); o.start(t); o.stop(t + 2.5); }
+    const n = this.nsrc(), ng = c.createGain(); ng.gain.setValueAtTime(0.6, t); ng.gain.exponentialRampToValueAtTime(0.001, t + 1.5); n.connect(ng); ng.connect(sh); n.start(t); n.stop(t + 1.6);
+  },
+  music(fear, chase) {
+    if (!this.ctx) return; const t = this.ctx.currentTime;
+    if (this.mNext === undefined || this.mNext < t) { this.mNext = t + 0.1; this.mStep = this.mStep || 0; }
+    const SC = [440, 523.25, 659.25, 587.33, 466.16, 392, 349.23, 440, 311.13, 523.25];
+    while (this.mNext < t + 0.4) {
+      if (Math.random() > (chase ? 0.25 : 0.4)) {
+        const r = Math.random(); this.mStep = (this.mStep + (r < 0.7 ? 1 : (r < 0.85 ? -1 : 2)) + SC.length) % SC.length;
+        const f = SC[this.mStep] * (Math.random() < 0.2 ? 0.5 : 1) * Math.pow(2, (Math.random() - 0.5) * 0.03), d = this.mNext - t;
+        this.tone(f, 'sine', 2.2, 0.07 + fear * 0.04, { delay: d, att: 0.005, wet: 0.8 });
+        this.tone(f * 2.01, 'sine', 1.2, 0.025, { delay: d, att: 0.005, wet: 0.8 });
+        this.tone(f * 3, 'sine', 0.6, 0.012, { delay: d, att: 0.005, wet: 0.8 });
+      }
+      this.mNext += chase ? 0.3 : 0.62;
+    }
+    if (this.chordAt === undefined || t > this.chordAt) { this.chordAt = t + 8; const ch = [[110, 164.8, 233.1], [98, 146.8, 207.7], [110, 174.6, 220]][(Math.random() * 3) | 0]; ch.forEach(f => this.tone(f, 'sawtooth', 9, 0.025, { att: 3.5, lp: 380, wet: 0.6 })); }
+    if (chase && (this.stAt === undefined || t > this.stAt)) { this.stAt = t + 3.2; this.tone(1244, 'sawtooth', 1.6, 0.025, { att: 0.8, to: 1175, lp: 3000, wet: 0.7 }); this.tone(1318, 'sawtooth', 1.6, 0.02, { att: 0.8, lp: 3000, wet: 0.7 }); }
+  },
+  laugh(vol = 0.3) {
+    if (!this.ctx) return; const c = this.ctx, t = c.currentTime;
+    for (let i = 0; i < 5; i++) {
+      const d = i * 0.19 + rand(-0.02, 0.02), o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+      o.type = 'sawtooth'; o.frequency.setValueAtTime(230 + rand(-15, 15), t + d); o.frequency.exponentialRampToValueAtTime(120, t + d + 0.16);
+      f.type = 'bandpass'; f.frequency.value = 1000; f.Q.value = 1.8;
+      g.gain.setValueAtTime(0.0001, t + d); g.gain.exponentialRampToValueAtTime(vol, t + d + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.16);
+      o.connect(f); f.connect(g); this.out(g, 0.45); o.start(t + d); o.stop(t + d + 0.2);
+      this.burst(0.12, vol * 0.5, { type: 'bandpass', f: 1600, q: 2, delay: d, wet: 0.5 });
+    }
+  },
+  drip() { this.tone(1900, 'sine', 0.14, 0.12, { to: 700, wet: 0.7, pan: rand(-0.3, 0.3) }); },
+  breath() { this.burst(0.9, 0.12, { type: 'bandpass', f: 600, q: 1.5, att: 0.35, wet: 0.4 }); },
+  listener(p, yaw) {
+    if (!this.ctx) return; const l = this.ctx.listener, fx = -Math.sin(yaw), fz = -Math.cos(yaw);
+    if (l.positionX) { l.positionX.value = p.x; l.positionY.value = p.y; l.positionZ.value = p.z; l.forwardX.value = fx; l.forwardY.value = 0; l.forwardZ.value = fz; l.upX.value = 0; l.upY.value = 1; l.upZ.value = 0; }
+    else { l.setPosition(p.x, p.y, p.z); l.setOrientation(fx, 0, fz, 0, 1, 0); }
+  }
+};
+
+/* ====================== رامي (الصوت والترجمة) ====================== */
+function speakRami(txt) {
+  try {
+    A.laugh(0.22);
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(txt); u.lang = 'ar-EG'; u.rate = 0.95; u.pitch = 0.55; u.volume = 1;
+      speechSynthesis.speak(u);
+    }
+  } catch (e) {}
+}
+
+/* ====================== اللاعب ====================== */
+const player = { pos: new THREE.Vector3(), yaw: 0, pitch: 0, stamina: 100, exhausted: false, bob: 0, stepT: 0, moving: false, sprinting: false, noise: 0 };
+const state = { mode: 'menu', paused: false, lock: false, ui: false, flashOn: true, hunt: false, deathT: 0 };
+const input = { keys: {}, jx: 0, jy: 0, jsprint: false, btnSprint: false, lookX: 0, lookY: 0 };
+const story = { phase: 'intro', keys: 0, q: [], subT: 0, curInter: null, exitOpen: false, ramiT: 0, lastTaunt: -1, chaseSaid: false, shake: 0, lightOn: false };
+const fx = { fear: 0, hb: 0, ambT: 2, flick: 0, dark: 0 };
+const after = (sec, fn) => story.q.push({ t: sec, fn });
+function say(txt, sec = 3, who = '') {
+  const e = $('sub'); e.className = who === 'rami' ? 'rami' : ''; e.textContent = (who === 'rami' ? 'رامي: ' : '') + txt;
+  e.style.opacity = 1; story.subT = sec;
+  if (who === 'rami') speakRami(txt);
+}
+function setObj(t) { const e = $('items'); e.textContent = t ? 'الهدف: ' + t : ''; e.style.display = t ? 'block' : 'none'; }
+function resolveCircleBox(p, r, x0, x1, z0, z1) {
+  const cx = clamp(p.x, x0, x1), cz = clamp(p.z, z0, z1); let dx = p.x - cx, dz = p.z - cz; const d2 = dx * dx + dz * dz;
+  if (d2 >= r * r) return;
+  if (d2 > 1e-8) { const d = Math.sqrt(d2), push = r - d; p.x += dx / d * push; p.z += dz / d * push; }
+  else { const l = p.x - x0, rr = x1 - p.x, t = p.z - z0, b = z1 - p.z, m = Math.min(l, rr, t, b); if (m === l) p.x = x0 - r; else if (m === rr) p.x = x1 + r; else if (m === t) p.z = z0 - r; else p.z = z1 + r; }
+}
+function collide(p, r) {
+  for (let it = 0; it < 2; it++) {
+    const ci = Math.floor(p.x / C), cj = Math.floor(p.z / C);
+    for (let j = cj - 1; j <= cj + 1; j++) for (let i = ci - 1; i <= ci + 1; i++) if (isWall(i, j)) resolveCircleBox(p, r, i * C, (i + 1) * C, j * C, (j + 1) * C);
+  }
+}
+function lineClear(a, b) {
+  const dx = b.x - a.x, dz = b.z - a.z, dist = Math.hypot(dx, dz), n = Math.max(1, Math.ceil(dist / 0.5));
+  for (let k = 1; k < n; k++) { const t = k / n, i = Math.floor((a.x + dx * t) / C), j = Math.floor((a.z + dz * t) / C); if (isWall(i, j)) return false; }
+  return true;
+}
+
+/* ====================== الكيان ====================== */
+const monster = new THREE.Group(); monster.visible = false; scene.add(monster);
+const M = { active: false, pos: new THREE.Vector3(), yaw: 0, st: 'patrol', path: [], pathT: 0, goal: null, lostT: 0, wait: 0, stepT: 0, moving: false, lastSeen: new THREE.Vector3(), cool: 0, animT: 0, body: null };
+const _v = new THREE.Vector3();
+const eyeMat = new THREE.SpriteMaterial({ map: (() => { const S = 64, c = mkCanvas(S, S), g = c.getContext('2d'); const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(255,60,40,1)'); gr.addColorStop(0.35, 'rgba(255,0,0,0.5)'); gr.addColorStop(1, 'rgba(255,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, S, S); const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; return t; })(), transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending, fog: false });
+const eyeL = new THREE.Sprite(eyeMat), eyeR = new THREE.Sprite(eyeMat);
+eyeL.scale.set(0.16, 0.16, 1); eyeR.scale.set(0.16, 0.16, 1); eyeL.visible = eyeR.visible = false; eyeL.renderOrder = eyeR.renderOrder = 5; scene.add(eyeL, eyeR);
+
+function buildFallbackMonster() {
+  const g = new THREE.Group(), mat = new THREE.MeshStandardMaterial({ color: 0x0b0a0a, roughness: 0.9 });
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.3, 1.5, 10), mat); body.position.y = 1.35; g.add(body);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 10), mat); head.position.y = 2.25; g.add(head);
+  g.traverse(o => { if (o.isMesh) o.castShadow = true; });
+  M.body = g; monster.add(g);
+}
+function setupMonsterModel(gltf) {
+  const holder = new THREE.Group();
+  const root = gltf.scene;
+  root.position.set(-55.6, 0, 0.12);   // مركز الموديل الأصلي
+  holder.add(root);
+  holder.scale.setScalar(2.3 / 7.13);  // الطول الأصلي حوالي 7.13 وحدة -> 2.3 متر
+  root.traverse(o => { if (o.isMesh) { o.frustumCulled = false; o.castShadow = true; o.receiveShadow = false; if (o.material) o.material.side = THREE.DoubleSide; } });
+  M.body = holder; monster.add(holder);
+}
+function animateMonster(dt, mv, chase) {
+  M.animT += dt * (mv ? (chase ? 7 : 3) : 0.8);
+  if (M.body) {
+    const s = Math.sin(M.animT);
+    M.body.position.y = mv ? Math.abs(s) * 0.05 : 0;
+    M.body.rotation.z = mv ? s * 0.03 : 0;
+  }
+  eyeL.visible = eyeR.visible = M.active && (M.st === 'chase' || M.st === 'investigate');
+}
+function updateEyes() {
+  if (!eyeL.visible) return;
+  const fx_ = Math.sin(M.yaw), fz_ = Math.cos(M.yaw), rx = Math.cos(M.yaw), rz = -Math.sin(M.yaw), s = 0.07, f = 0.2, fl = 0.14 + Math.random() * 0.04;
+  eyeL.position.set(M.pos.x + fx_ * f + rx * s, 2.1, M.pos.z + fz_ * f + rz * s);
+  eyeR.position.set(M.pos.x + fx_ * f - rx * s, 2.1, M.pos.z + fz_ * f - rz * s);
+  eyeL.scale.set(fl, fl, 1); eyeR.scale.set(fl, fl, 1);
+}
+function bfs(from, to) {
+  const [si, sj] = cellOf(from), [gi, gj] = cellOf(to), W = GW, H = GH, prev = new Int16Array(W * H).fill(-2), s = sj * W + si, goal = gj * W + gi, q = [s];
+  prev[s] = -1; let found = s === goal;
+  for (let h = 0; h < q.length && !found; h++) {
+    const cur = q[h], ci = cur % W, cj = (cur / W) | 0;
+    for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const ni = ci + di, nj = cj + dj; if (ni < 0 || nj < 0 || ni >= W || nj >= H) continue;
+      const n = nj * W + ni; if (prev[n] !== -2) continue; if (n !== goal && isWall(ni, nj)) continue;
+      prev[n] = cur; q.push(n); if (n === goal) { found = true; break; }
+    }
+  }
+  if (!found) return null;
+  const path = []; let c = goal; while (c !== s) { path.push(cellCenter(c % W, (c / W) | 0)); c = prev[c]; } return path.reverse();
+}
+function monsterGoTo(v) { M.goal = v.clone(); M.path = bfs(M.pos, v) || []; M.pathT = 0.5; }
+function startChase() {
+  if (M.st === 'chase') return;
+  M.st = 'chase'; M.lostT = 0; M.lastSeen.copy(player.pos);
+  if (M.cool <= 0) { A.sting(); A.roar(); M.cool = 10; say('ههه... شافك! اجري يا زياد!', 2.6, 'rami'); }
+}
+function updateMonster(dt) {
+  if (!M.active) return;
+  const toP = _v.set(player.pos.x - M.pos.x, 0, player.pos.z - M.pos.z), dist = toP.length();
+  const los = dist < 30 && lineClear(M.pos, player.pos);
+  const inCone = state.flashOn && dist < 17;
+  const seen = los && (inCone || dist < 6 || state.hunt);
+  const heard = player.noise > 0 && dist < player.noise;
+  if (M.st === 'patrol') { if (seen) startChase(); else if (heard) { M.st = 'investigate'; monsterGoTo(player.pos); } }
+  else if (M.st === 'investigate') { if (seen) startChase(); else if (heard) M.goal = player.pos.clone(); }
+  else if (M.st === 'chase') { if (seen) { M.lostT = 0; M.lastSeen.copy(player.pos); } else { M.lostT += dt; if (M.lostT > (state.hunt ? 9 : 5)) { M.st = 'investigate'; monsterGoTo(M.lastSeen); } } }
+  M.cool -= dt;
+  let speed = 0, target = null;
+  if (M.st === 'chase') {
+    speed = 3.1;
+    const tp = seen ? player.pos : M.lastSeen;
+    if (lineClear(M.pos, tp)) { target = tp; M.path = []; }
+    else { M.pathT -= dt; if (M.pathT <= 0 || !M.path.length) { M.path = bfs(M.pos, tp) || []; M.pathT = 0.35; } target = M.path[0] || tp; }
+  } else if (M.st === 'investigate') {
+    speed = 2.3; M.pathT -= dt;
+    if (M.goal && (M.pathT <= 0 || !M.path.length)) { M.path = bfs(M.pos, M.goal) || []; M.pathT = 0.6; }
+    target = M.path[0];
+    if (!target || (M.goal && Math.hypot(M.goal.x - M.pos.x, M.goal.z - M.pos.z) < 1.0)) { M.st = 'patrol'; M.wait = rand(1.5, 3.5); M.goal = null; M.path = []; }
+  } else {
+    speed = 1.4;
+    if (M.wait > 0) { M.wait -= dt; speed = 0; }
+    else { if (!M.path.length) { const c = randomCell(12, M.pos); M.path = bfs(M.pos, c) || []; if (!M.path.length) M.wait = 1; } target = M.path[0]; }
+  }
+  M.moving = false;
+  if (target && speed > 0) {
+    const dx = target.x - M.pos.x, dz = target.z - M.pos.z, d = Math.hypot(dx, dz);
+    if (d < 0.4 && M.path.length) M.path.shift();
+    if (d > 0.01) {
+      const mvd = Math.min(d, speed * dt); M.pos.x += dx / d * mvd; M.pos.z += dz / d * mvd; collide(M.pos, 0.5); M.moving = true;
+      const ty = Math.atan2(dx, dz); let diff = ty - M.yaw; diff = Math.atan2(Math.sin(diff), Math.cos(diff)); M.yaw += clamp(diff, -dt * 5, dt * 5);
+    }
+  }
+  if (M.moving) {
+    M.stepT -= dt * (M.st === 'chase' ? 1 : 0.6);
+    if (M.stepT <= 0) { M.stepT = M.st === 'chase' ? 0.3 : 0.65; A.mstep(dist, clamp(((M.pos.x - player.pos.x) * Math.cos(player.yaw) - (M.pos.z - player.pos.z) * Math.sin(player.yaw)) / Math.max(1, dist), -1, 1)); }
+  }
+  monster.position.set(M.pos.x, 0, M.pos.z);
+  monster.rotation.y = M.yaw;
+  animateMonster(dt, M.moving, M.st === 'chase');
+  updateEyes();
+  if (dist < 1.15 && state.mode === 'play') startDeath();
+}
+
+/* ====================== المشاهد ====================== */
+const RAMI_TAUNTS = [
+  'لسه بتدور على طريق الخروج يا شاطر؟',
+  'سامعك... بتتنفس بسرعة كده ليه؟',
+  'كل الناس كانت بتقول زياد هو الأذكى... شوف دلوقتي هتعمل إيه.',
+  'إنت مش هتعرف تطلع من هنا لوحدك.',
+  'الكيان ده جعان... وإنت قريب منه أوي.',
+  'هاها... فاكر إن الكشاف ده هيحميك؟',
+  'كنت دايماً بتعمل الصح... ومش بتعرف تعمل الغلط. دلوقتي مش عارف تعمل حاجة.'
+];
+function ramiTaunt() {
+  let k; do { k = (Math.random() * RAMI_TAUNTS.length) | 0; } while (k === story.lastTaunt && RAMI_TAUNTS.length > 1);
+  story.lastTaunt = k; say(RAMI_TAUNTS[k], 4.5, 'rami');
+}
+function punch(line) { A.thud(); story.shake = 0.45; say(line, 3, 'rami'); }
+function startIntro() {
+  story.phase = 'intro'; state.lock = true; setObj('');
+  const f = $('fade');
+  A.drip(); after(1.0, () => A.breath()); after(5.8, () => A.laugh(0.25));
+  after(2.5, () => { say('(زياد بيفوق... الدنيا لافة وصداع مهول...)', 3.5); });
+  after(7.0, () => { say('ها... صحيت يا بطل؟ بص حواليك... مش شبه قسم الشرطة، صح؟', 5, 'rami'); });
+  after(13.0, () => { say('هههه... إنت دايماً الشاطر... الكل بيحبك... بس دلوقتي مش هتعرف تعمل حاجة.', 5.5, 'rami'); });
+  after(19.5, () => punch('إنت مش هتعرف تهرب من الكلام ده!'));
+  after(22.5, () => punch('إنت ما تعرفش تعمل حاجة!'));
+  after(25.5, () => { say('خد وقتك... فكّر... أنا ماشي.', 3, 'rami'); A.creak(); });
+  after(29.0, () => { say('ركّز في الصوت... هسمعك من بعيد يا زياد.', 4.5, 'rami'); });
+  after(34.0, () => {
+    story.phase = 'play'; state.lock = false; story.ramiT = 18;
+    setObj('دوّر على 3 مفاتيح وافتح باب الطوارئ');
+    M.active = true; M.st = 'patrol'; M.pos.copy(randomCell(25, player.pos)); monster.visible = true; monster.position.set(M.pos.x, 0, M.pos.z);
+  });
+}
+function takeKey(i) {
+  const k = KEYS[i]; k.got = true; k.g.visible = false; story.keys++; A.pickup();
+  setObj(story.keys < 3 ? 'المفاتيح: ' + story.keys + '/3 · دوّر على الباقي' : 'المفاتيح: 3/3 · روح لباب الطوارئ!');
+  const lines = [
+    'كويس... مفتاح واحد. جرّب تلاقي الباقي.',
+    'اتنين! ده بس اللي عرفت تلاقيه؟',
+    'التالت... يلا، روح للباب. ولا خايف؟'
+  ];
+  say(lines[story.keys - 1], 4, 'rami');
+}
+function winSequence() {
+  story.phase = 'win'; state.lock = true; M.active = false; monster.visible = false; eyeL.visible = eyeR.visible = false; setObj('');
+  if (document.pointerLockElement) document.exitPointerLock();
+  $('touch').style.display = 'none';
+  const f = $('fade'); f.style.background = '#fff'; f.style.transition = 'opacity 2.5s'; f.style.opacity = 1;
+  after(2.6, () => { f.style.transition = 'none'; f.style.background = '#000'; });
+  after(3.0, () => { f.style.transition = 'opacity 1.5s'; f.style.opacity = 0; });
+  after(3.4, () => say('ههه... كنت متوقع إنك تعدّي... بس إنت لسه جوه يا زياد.', 5, 'rami'));
+  after(9.0, () => endScreen(true));
+}
+
+const INTER = [
+  { id: 'exit', p: [exitC.x, exitC.z], r: 2.6, label: 'افتح باب الطوارئ', on: () => story.phase === 'play', act() {
+    if (story.keys < 3) { say('الباب مقفول... معاك ' + story.keys + ' مفاتيح بس.', 2.6); return; }
+    story.exitOpen = true; A.creak(); winSequence(); } },
+  ...KEYS.map((k, i) => ({ id: 'key' + i, p: [k.p.x, k.p.z], r: 1.9, label: 'خد المفتاح', on: () => story.phase === 'play' && !k.got, act: () => takeKey(i) }))
+];
+function doInteract() { if (state.mode !== 'play' || state.paused || state.lock || state.ui) return; if (story.curInter) story.curInter.act(); }
+
+/* ====================== الموت والنهاية ====================== */
+function startDeath() {
+  state.mode = 'dead'; state.deathT = 0; A.roar(); if (document.pointerLockElement) document.exitPointerLock();
+  const dx = player.pos.x - M.pos.x, dz = player.pos.z - M.pos.z; M.yaw = Math.atan2(dx, dz); monster.rotation.y = M.yaw;
+  $('touch').style.display = 'none'; $('hud').style.display = 'none';
+  $('flash').style.transition = 'none'; $('flash').style.opacity = 0.9; setTimeout(() => { $('flash').style.transition = 'opacity 1.2s'; $('flash').style.opacity = 0; }, 60);
+  A.setFear(0, false);
+  say('ههه... مش قلتلك؟', 3, 'rami');
+}
+function updateDeath(dt) {
+  state.deathT += dt; const t = state.deathT;
+  animateMonster(dt, false, true);
+  const k = Math.min(1, t * 3.5), dirx = Math.sin(M.yaw), dirz = Math.cos(M.yaw), dd = lerp(1.4, 0.85, k);
+  const hy = 2.0;
+  camera.position.set(M.pos.x + dirx * dd, lerp(player.pos.y, hy - 0.12, Math.min(1, t * 5)), M.pos.z + dirz * dd);
+  camera.lookAt(M.pos.x, hy, M.pos.z); camera.fov = lerp(75, 98, k); camera.updateProjectionMatrix();
+  flash.intensity = Math.random() > 0.5 ? 3.2 : 1.1; updateEyes();
+  if (t > 2.3 && $('end').classList.contains('hidden')) endScreen(false);
+}
+function endScreen(win) {
+  const e = $('end'); e.classList.remove('hidden'); $('hud').style.display = 'none'; $('act').style.display = 'none'; $('touch').style.display = 'none';
+  $('endTitle').textContent = win ? 'يتبع...' : 'الكيان مسكك'; $('endTitle').className = win ? 'grn' : 'red';
+  $('endSub').textContent = win ? 'صدى في الظلام 2 · زياد · الجزء التالت جاي' : 'رامي لسه بيضحك... حاول تاني.';
+  $('againBtn').textContent = win ? 'العب من الأول' : 'حاول تاني';
+}
+
+/* ====================== الإدخال ====================== */
+addEventListener('keydown', e => {
+  input.keys[e.code] = true;
+  if (state.ui) return;
+  if (e.code === 'KeyF' && state.mode === 'play') toggleLight(); if (e.code === 'KeyE') doInteract();
+});
+addEventListener('keyup', e => { input.keys[e.code] = false; });
+renderer.domElement.addEventListener('mousemove', e => { if ((document.pointerLockElement === renderer.domElement || (e.buttons & 1)) && state.mode === 'play') { input.lookX += e.movementX * 0.0022; input.lookY += e.movementY * 0.0022; } });
+document.addEventListener('pointerlockchange', () => { if (!IS_TOUCH && state.mode === 'play' && !state.ui && document.pointerLockElement !== renderer.domElement) pauseGame(true); });
+function toggleLight() { if (state.lock) return; state.flashOn = !state.flashOn; $('btnLight').classList.toggle('on', state.flashOn); A.tone(state.flashOn ? 1800 : 1200, 'square', 0.04, 0.05, { wet: 0 }); }
+
+const joy = { id: null, ox: 0, oy: 0 }, lk = { id: null, x: 0, y: 0 };
+const zoneL = $('zoneL'), zoneR = $('zoneR'), jb = $('joyBase'), jk = $('joyKnob');
+zoneL.addEventListener('pointerdown', e => { if (joy.id !== null) return; joy.id = e.pointerId; joy.ox = e.clientX; joy.oy = e.clientY; zoneL.setPointerCapture(e.pointerId); jb.style.display = 'block'; jb.style.left = e.clientX + 'px'; jb.style.top = e.clientY + 'px'; jk.style.transform = 'translate(0,0)'; e.preventDefault(); });
+zoneL.addEventListener('pointermove', e => { if (e.pointerId !== joy.id) return; let dx = e.clientX - joy.ox, dy = e.clientY - joy.oy; const R = 55, l = Math.hypot(dx, dy); input.jsprint = l > R * 1.25; if (l > R) { dx *= R / l; dy *= R / l; } input.jx = dx / R; input.jy = dy / R; jk.style.transform = `translate(${dx}px,${dy}px)`; });
+const joyEnd = e => { if (e.pointerId !== joy.id) return; joy.id = null; input.jx = input.jy = 0; input.jsprint = false; jb.style.display = 'none'; };
+zoneL.addEventListener('pointerup', joyEnd); zoneL.addEventListener('pointercancel', joyEnd);
+zoneR.addEventListener('pointerdown', e => { if (lk.id !== null) return; lk.id = e.pointerId; lk.x = e.clientX; lk.y = e.clientY; zoneR.setPointerCapture(e.pointerId); e.preventDefault(); });
+zoneR.addEventListener('pointermove', e => { if (e.pointerId !== lk.id) return; input.lookX += (e.clientX - lk.x) * 0.0046; input.lookY += (e.clientY - lk.y) * 0.0046; lk.x = e.clientX; lk.y = e.clientY; });
+const lkEnd = e => { if (e.pointerId === lk.id) lk.id = null; };
+zoneR.addEventListener('pointerup', lkEnd); zoneR.addEventListener('pointercancel', lkEnd);
+const bR = $('btnRun'), bL = $('btnLight');
+bR.addEventListener('pointerdown', e => { input.btnSprint = true; bR.classList.add('on'); bR.setPointerCapture(e.pointerId); e.preventDefault(); });
+const bRup = () => { input.btnSprint = false; bR.classList.remove('on'); };
+bR.addEventListener('pointerup', bRup); bR.addEventListener('pointercancel', bRup);
+bL.addEventListener('pointerdown', e => { if (state.mode === 'play') toggleLight(); e.preventDefault(); });
+$('act').addEventListener('pointerdown', e => { doInteract(); e.preventDefault(); });
+
+/* ====================== اللعبة ====================== */
+function lockPointer() { if (!IS_TOUCH) { try { renderer.domElement.requestPointerLock(); } catch (e) {} } }
+function pauseGame(p) {
+  if (state.mode !== 'play') return; state.paused = p; $('pause').classList.toggle('hidden', !p);
+  if (A.ctx) p ? A.ctx.suspend() : A.ctx.resume(); if (p && document.pointerLockElement) document.exitPointerLock();
+}
+function loadStart() {
+  // إعادة كاملة للمرحلة (المتاهة بتتعمل من جديد لو عايز، هنا بنفس المتاهة)
+  Object.assign(state, { mode: 'play', paused: false, lock: false, ui: false, hunt: false, flashOn: true });
+  story.keys = 0; story.q = []; story.exitOpen = false; story.phase = 'intro'; story.lastTaunt = -1; story.shake = 0;
+  KEYS.forEach(k => { k.got = false; k.g.visible = true; });
+  M.active = false; monster.visible = false; M.st = 'patrol'; M.path = []; M.goal = null; M.lostT = 0; M.cool = 0; M.wait = 0;
+  $('sub').style.opacity = 0; $('act').style.display = 'none'; $('pause').classList.add('hidden'); $('end').classList.add('hidden');
+  $('hud').style.display = 'block'; $('touch').style.display = IS_TOUCH ? 'block' : 'none'; $('pauseBtn').style.display = IS_TOUCH ? 'block' : 'none';
+  $('btnLight').style.display = IS_TOUCH ? 'flex' : 'none';
+  player.pos.set((START.i + 0.5) * C, 1.65, (START.j + 0.5) * C); player.yaw = 0; player.pitch = 0; player.stamina = 100; player.exhausted = false;
+  camera.fov = 75; camera.updateProjectionMatrix();
+  fx.fear = 0; fx.hb = 0; fx.ambT = 2; fx.flick = 0;
+  const f = $('fade'); f.style.transition = 'none'; f.style.background = '#000'; f.style.opacity = 1;
+  requestAnimationFrame(() => requestAnimationFrame(() => { f.style.transition = 'opacity 3s'; f.style.opacity = 0; }));
+  startIntro();
+}
+async function startGame() {
+  A.init(); if (A.ctx && A.ctx.state === 'suspended') A.ctx.resume();
+  try { await document.documentElement.requestFullscreen?.(); } catch (e) {}
+  try { await screen.orientation?.lock?.('landscape'); } catch (e) {}
+  try { navigator.wakeLock?.request('screen'); } catch (e) {}
+  $('menu').classList.add('hidden'); loadStart(); lockPointer();
+}
+$('startBtn').addEventListener('click', startGame);
+$('againBtn').addEventListener('click', () => { $('end').classList.add('hidden'); M.cool = 0; loadStart(); lockPointer(); });
+$('resumeBtn').addEventListener('click', () => { pauseGame(false); lockPointer(); });
+$('pauseBtn').addEventListener('click', () => pauseGame(true));
+document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(true); });
+
+function updatePlay(dt) {
+  for (let i = 0; i < story.q.length; i++) { const it = story.q[i]; it.t -= dt; if (it.t <= 0) { story.q.splice(i, 1); i--; try { it.fn(); } catch (e) { console.error(e); } } }
+  if (story.subT > 0) { story.subT -= dt; if (story.subT <= 0) $('sub').style.opacity = 0; }
+  if (!state.ui) { player.yaw -= input.lookX; player.pitch = clamp(player.pitch - input.lookY, -1.3, 1.3); }
+  input.lookX = input.lookY = 0;
+  const k = input.keys, locked = state.lock || state.ui;
+  let ix = locked ? 0 : (k.KeyD || k.ArrowRight ? 1 : 0) - (k.KeyA || k.ArrowLeft ? 1 : 0) + input.jx;
+  let iy = locked ? 0 : (k.KeyW || k.ArrowUp ? 1 : 0) - (k.KeyS || k.ArrowDown ? 1 : 0) - input.jy;
+  const il = Math.hypot(ix, iy); if (il > 1) { ix /= il; iy /= il; }
+  const wantSprint = (k.ShiftLeft || k.ShiftRight || input.btnSprint || input.jsprint) && il > 0.2;
+  player.sprinting = wantSprint && player.stamina > 0 && !player.exhausted;
+  if (player.sprinting) { player.stamina -= 22 * dt; if (player.stamina <= 0) { player.stamina = 0; player.exhausted = true; } }
+  else { player.stamina = Math.min(100, player.stamina + (il > 0.2 ? 9 : 18) * dt); if (player.exhausted && player.stamina > 30) player.exhausted = false; }
+  const sp = (player.sprinting ? 5.3 : 3.1) * Math.min(1, il), sy = Math.sin(player.yaw), cy = Math.cos(player.yaw);
+  player.pos.x += (-sy * iy + cy * ix) * sp * dt; player.pos.z += (-cy * iy - sy * ix) * sp * dt; collide(player.pos, 0.34);
+  player.moving = il > 0.2; player.noise = player.moving ? (player.sprinting ? 13 : 4.5) : 0;
+  if (player.moving) { player.bob += dt * (player.sprinting ? 12 : 8); player.stepT -= dt; if (player.stepT <= 0) { A.step(player.sprinting); player.stepT = player.sprinting ? 0.3 : 0.5; } }
+  const bobAmt = player.moving ? (player.sprinting ? 0.07 : 0.045) : 0.012, bt = player.moving ? player.bob : performance.now() * 0.0016;
+  const shake = story.shake > 0 ? story.shake * 0.25 : (fx.fear > 0.6 ? (fx.fear - 0.6) * 0.012 : 0);
+  if (story.shake > 0) story.shake -= dt;
+  camera.position.set(player.pos.x + rand(-shake, shake), 1.65 + Math.sin(bt * 2) * bobAmt, player.pos.z + rand(-shake, shake));
+  camera.rotation.set(player.pitch + Math.sin(bt * 1.3) * 0.004 + rand(-shake, shake), player.yaw, Math.sin(bt) * (player.moving ? 0.008 : 0.003));
+  const tf = player.sprinting ? 82 : 75; camera.fov = lerp(camera.fov, tf, 1 - Math.exp(-dt * 6)); camera.updateProjectionMatrix();
+  $('stam').firstElementChild.style.width = player.stamina + '%'; $('stam').style.opacity = player.stamina < 99 ? 1 : 0.25;
+
+  // المفاتيح بتلف
+  KEYS.forEach(kk => { if (!kk.got) kk.g.rotation.y += dt * 1.5; });
+
+  // الكيان
+  updateMonster(dt);
+
+  // اختبار التفاعل
+  story.curInter = null;
+  if (!locked && story.phase === 'play') {
+    let best = 1e9;
+    for (const it of INTER) { if (!it.on()) continue; const d = Math.hypot(it.p[0] - player.pos.x, it.p[1] - player.pos.z); if (d < it.r && d < best) { best = d; story.curInter = it; } }
+  }
+  const ab = $('act');
+  if (story.curInter) { ab.style.display = 'block'; const lb = (IS_TOUCH ? '' : 'E · ') + story.curInter.label; if (ab.textContent !== lb) ab.textContent = lb; } else ab.style.display = 'none';
+
+  // رامي بيستفز زياد كل شوية
+  if (story.phase === 'play') { story.ramiT -= dt; if (story.ramiT <= 0) { story.ramiT = rand(22, 34); ramiTaunt(); } }
+  if (story.phase === 'play' || story.phase === 'intro') { story.laughT = (story.laughT || rand(10, 18)) - dt; if (story.laughT <= 0) { story.laughT = rand(14, 26); A.laugh(0.12); } }
+
+  // الخوف
+  let tf2 = 0;
+  if (M.active) { const md = Math.hypot(M.pos.x - player.pos.x, M.pos.z - player.pos.z), vis = lineClear(M.pos, player.pos); tf2 = clamp(1 - (md * (vis ? 1 : 1.7)) / 20, 0, 1) * (M.st === 'chase' ? 1 : 0.6) + (M.st === 'chase' ? 0.2 : 0); }
+  fx.fear = lerp(fx.fear, clamp(tf2, 0, 1), 1 - Math.exp(-dt * 2.2));
+  A.setFear(fx.fear, M.active && M.st === 'chase');
+  A.music(fx.fear, M.active && M.st === 'chase');
+  fx.hb -= dt; if (fx.fear > 0.12 && fx.hb <= 0) { A.beat(0.35 + fx.fear * 0.8); fx.hb = 60 / (55 + fx.fear * 110); }
+  if (M.active && M.st === 'chase' && Math.hypot(M.pos.x - player.pos.x, M.pos.z - player.pos.z) < 6) { fx.br = (fx.br || 0) - dt; if (fx.br <= 0) { A.breath(); A.thud(); fx.br = rand(0.9, 1.6); } }
+  $('vig').style.opacity = 0.78 + fx.fear * 0.22; $('dmg').style.opacity = Math.max(0, fx.fear - 0.25) * 0.8;
+
+  // الإضاءة: الكشاف + وميض عشوائي للأوض
+  let li = state.flashOn ? 3.2 : 0, amb = 0.55;
+  if (fx.dark > 0) { fx.dark -= dt; li = fx.dark < 0.3 && Math.random() > 0.5 ? 1.0 : 0; amb = 0.08; }
+  else if (Math.random() < 0.0015) fx.dark = rand(0.6, 1.4);
+  if (li > 0) {
+    fx.flick -= dt;
+    if (fx.flick <= 0) { if (fx.fear > 0.5 && Math.random() < fx.fear * 0.5) { fx.flick = rand(0.05, 0.3); flash.userData.f = true; } else { fx.flick = rand(0.4, 2); flash.userData.f = false; } }
+    if (flash.userData.f) li *= Math.random() > 0.5 ? 0.15 : 0.6;
+  }
+  flash.intensity = li; ambient.intensity = amb; hemi.intensity = amb * 0.35;
+
+  // أصوات المكان
+  fx.ambT -= dt;
+  if (fx.ambT <= 0) { fx.ambT = rand(4, 9); const r = Math.random(); if (r < 0.4) A.creak(); else if (r < 0.7) A.drip(); else if (r < 0.9) A.whisper(); else A.slam(); }
+  A.listener(camera.position, player.yaw);
+}
+
+/* ====================== الحلقة ====================== */
+let last = performance.now();
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (state.mode === 'play' && !state.paused) updatePlay(dt);
+  else if (state.mode === 'dead') updateDeath(dt);
+  else if (state.mode === 'menu') { camera.position.set(8.75, 1.6, 8.75); camera.rotation.set(0, Math.sin(now * 0.0001) * 0.6, 0); flash.intensity = 1.5; }
+  renderer.render(scene, camera);
+}
+addEventListener('resize', () => { renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); });
+
+/* ====================== تحميل الكيان ====================== */
+function ready(msg) { $('loadbar').firstElementChild.style.width = '100%'; $('loadtxt').textContent = msg; $('startBtn').disabled = false; }
+new GLTFLoader().load('entity_1k.glb',
+  gltf => { try { setupMonsterModel(gltf); ready('الكيان مستنيك... 👁'); } catch (e) { console.error(e); buildFallbackMonster(); ready('جاهز (شكل بديل للكيان)'); } },
+  e => { const bar = $('loadbar').firstElementChild; if (e.lengthComputable && e.total) { bar.style.width = (e.loaded / e.total * 100).toFixed(0) + '%'; $('loadtxt').textContent = `تحميل الكيان ${(e.loaded / e.total * 100).toFixed(0)}%`; } },
+  err => { console.error(err); buildFallbackMonster(); ready('ملف الكيان مش موجود - هستخدم شكل بديل'); });
+requestAnimationFrame(frame);
+if (DEBUG) window.__g = { player, state, story, M, monster, A, loadStart, updatePlay, doInteract, INTER, KEYS, EXIT, winSequence, takeKey, startDeath, grid, cellCenter };
+</script>
+</body>
+</html>
