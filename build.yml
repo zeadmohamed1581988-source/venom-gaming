@@ -1,0 +1,273 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - out: venom-gaming.apk
+            label: "VENOM GAMING"
+            pkg: com.venom.gaming
+            start: design.html
+            icon: venom_icon.png
+          - out: echo2.apk
+            label: "صدى في الظلام 2"
+            pkg: com.venom.echo2
+            start: echo2.html
+            icon: echo2_cover.png
+          - out: jetski.apk
+            label: "جيت سكي"
+            pkg: com.venom.jetski
+            start: jetski.html
+            icon: jetski_cover.png
+          - out: echo.apk
+            label: "صدى في الظلام"
+            pkg: com.venom.echo
+            start: echo.html
+            icon: echo_cover.png
+          - out: echo3.apk
+            label: "صدى في الظلام 3"
+            pkg: com.venom.echo3
+            start: echo3.html
+            icon: echo3_cover.png
+          - out: madrasa1.apk
+            label: "المدرسة بعد الدوام"
+            pkg: com.venom.madrasa1
+            start: madrasa1.html
+            icon: madrasa1_cover.png
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get app files
+        uses: actions/checkout@v4
+
+      - name: Get website files
+        uses: actions/checkout@v4
+        with:
+          repository: zeadmohamed1581988-source/venom-gaming
+          ref: main
+          path: site
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Create Android project
+        env:
+          APP_LABEL: ${{ matrix.label }}
+          APP_PKG: ${{ matrix.pkg }}
+          START_PAGE: ${{ matrix.start }}
+          ICON_FILE: ${{ matrix.icon }}
+        run: |
+          set -e
+          ROOT="$GITHUB_WORKSPACE/android"
+          A="$ROOT/app/src/main/assets"
+          mkdir -p "$ROOT/app/src/main/java/com/venom/gaming" "$A" "$ROOT/app/src/main/res/mipmap-xxhdpi"
+
+          cat > "$ROOT/settings.gradle" <<'EOF'
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          rootProject.name = "VenomGaming"
+          include ':app'
+          EOF
+
+          cat > "$ROOT/build.gradle" <<'EOF'
+          plugins {
+              id 'com.android.application' version '8.5.2' apply false
+          }
+          EOF
+
+          cat > "$ROOT/gradle.properties" <<'EOF'
+          android.useAndroidX=true
+          org.gradle.jvmargs=-Xmx2g
+          EOF
+
+          cat > "$ROOT/app/build.gradle" <<'EOF'
+          plugins {
+              id 'com.android.application'
+          }
+          android {
+              namespace 'com.venom.gaming'
+              compileSdk 34
+              defaultConfig {
+                  applicationId 'APP_PKG_HERE'
+                  minSdk 21
+                  targetSdk 34
+                  versionCode 1
+                  versionName '1.0'
+              }
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+          }
+          dependencies {
+              implementation 'androidx.webkit:webkit:1.11.0'
+          }
+          EOF
+          sed -i "s|APP_PKG_HERE|$APP_PKG|" "$ROOT/app/build.gradle"
+
+          cat > "$ROOT/app/src/main/AndroidManifest.xml" <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <uses-permission android:name="android.permission.INTERNET" />
+              <application
+                  android:label="APP_LABEL_HERE"
+                  android:icon="@mipmap/ic_launcher"
+                  android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+                  android:allowBackup="true">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true"
+                      android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout|density">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+          sed -i "s|APP_LABEL_HERE|$APP_LABEL|" "$ROOT/app/src/main/AndroidManifest.xml"
+
+          cat > "$ROOT/app/src/main/java/com/venom/gaming/MainActivity.java" <<'EOF'
+          package com.venom.gaming;
+
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.view.View;
+          import android.view.WindowManager;
+          import android.webkit.WebResourceRequest;
+          import android.webkit.WebResourceResponse;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+          import androidx.webkit.WebViewAssetLoader;
+
+          public class MainActivity extends Activity {
+              private WebView web;
+
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                  web = new WebView(this);
+                  setContentView(web);
+                  WebSettings s = web.getSettings();
+                  s.setJavaScriptEnabled(true);
+                  s.setDomStorageEnabled(true);
+                  s.setMediaPlaybackRequiresUserGesture(false);
+                  s.setAllowFileAccess(false);
+                  final WebViewAssetLoader loader = new WebViewAssetLoader.Builder()
+                          .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))
+                          .build();
+                  web.setWebViewClient(new WebViewClient() {
+                      @Override
+                      public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                          return loader.shouldInterceptRequest(request.getUrl());
+                      }
+                  });
+                  web.loadUrl("https://appassets.androidplatform.net/assets/START_PAGE_HERE");
+              }
+
+              @Override
+              public void onBackPressed() {
+                  if (web != null && web.canGoBack()) {
+                      web.goBack();
+                  } else {
+                      super.onBackPressed();
+                  }
+              }
+
+              @Override
+              public void onWindowFocusChanged(boolean hasFocus) {
+                  super.onWindowFocusChanged(hasFocus);
+                  if (hasFocus) {
+                      getWindow().getDecorView().setSystemUiVisibility(
+                              View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                              | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                              | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                              | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                              | View.SYSTEM_UI_FLAG_FULLSCREEN
+                              | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                  }
+              }
+          }
+          EOF
+          sed -i "s|START_PAGE_HERE|$START_PAGE|" "$ROOT/app/src/main/java/com/venom/gaming/MainActivity.java"
+
+          # website files into the app
+          cp -r "$GITHUB_WORKSPACE/site/." "$A/"
+          rm -rf "$A/.git" "$A/README.md" "$A/monster (1).glb"
+
+          # app icon = logo
+          convert "$GITHUB_WORKSPACE/$ICON_FILE" -resize 192x192 "$ROOT/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" || cp "$GITHUB_WORKSPACE/$ICON_FILE" "$ROOT/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+
+          # three.js inside the app so the 3D games work offline
+          cd "$RUNNER_TEMP"
+          npm pack three@0.146.0 --silent
+          tar xzf three-0.146.0.tgz
+          mkdir -p "$A/lib/three/build" "$A/lib/three/examples/jsm"
+          cp package/build/three.module.js "$A/lib/three/build/"
+          cp -r package/examples/jsm/loaders "$A/lib/three/examples/jsm/"
+          cp -r package/examples/jsm/utils "$A/lib/three/examples/jsm/"
+          if [ -f "$A/echo.html" ]; then
+            sed -i 's#https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.module.js#./lib/three/build/three.module.js#; s#https://cdn.jsdelivr.net/npm/three@0.146.0/examples/jsm/#./lib/three/examples/jsm/#' "$A/echo.html"
+            grep -q "./lib/three/build/three.module.js" "$A/echo.html"
+          fi
+
+      - name: Build APK
+        working-directory: android
+        run: gradle assembleDebug --no-daemon
+
+      - name: Save APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk "${{ matrix.out }}"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.out }}
+          path: ${{ matrix.out }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all APKs
+        uses: actions/download-artifact@v4
+        with:
+          path: apks
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag --repo "${{ github.repository }}" || true
+          gh release create latest apks/*/*.apk --repo "${{ github.repository }}" --title "VENOM GAMING APK" --notes "أحدث نسخ الألعاب والتطبيق"
