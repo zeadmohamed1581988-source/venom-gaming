@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>المدرسة بعد الدوام · الجزء 1 | VENOM GAMING</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Tahoma,'Segoe UI',Arial,sans-serif;color:#eee6ff;touch-action:none}
+canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.screen{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px;background:radial-gradient(ellipse at 50% 30%,#1a1030 0%,#07050d 60%,#000 100%)}
+.screen.hidden{display:none}
+.brand{letter-spacing:6px;font-size:13px;color:#c79bff;margin-bottom:6px}
+h1{margin:4px 0 6px;font-size:34px;color:#fff;text-shadow:0 0 12px #9b2cff,0 0 30px #4a1494}
+h2{margin:4px 0 8px;font-size:28px;color:#fff;text-shadow:0 0 12px #9b2cff}
+.sub{margin:0 0 14px;color:#b9a2d9;font-size:14px;max-width:440px;line-height:1.7}
+.btn{font-family:inherit;font-size:20px;font-weight:bold;color:#fff;background:linear-gradient(#8a2cff,#4a1494);border:2px solid #b35cff;border-radius:12px;padding:12px 38px;margin:8px;box-shadow:0 0 18px #9b2cff88;cursor:pointer}
+.btn:disabled{opacity:.45}
+ul.how{list-style:none;padding:0;margin:10px 0;max-width:440px;font-size:13.5px;line-height:1.9;color:#cbbcea}
+ul.how b{color:#e3c8ff}
+#loadtxt{font-size:13px;color:#b9a2d9;margin-top:8px;max-width:420px;line-height:1.7}
+#intro{position:fixed;inset:0;z-index:40;background:#000;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+#introImg{max-width:100%;max-height:70vh;object-fit:contain;border-radius:10px;box-shadow:0 0 30px #5b21b655}
+#introTxt{margin-top:14px;font-size:18px;line-height:1.8;color:#eee6ff;max-width:520px;padding:0 16px}
+#skipIntro{position:absolute;bottom:16px;left:16px;background:#14102b;color:#cbbcea;border:1px solid #4a2a7a;border-radius:10px;padding:8px 14px;font-family:inherit;font-size:14px}
+#hud{position:fixed;inset:0;z-index:13;pointer-events:none;display:none}
+#top{position:absolute;top:12px;left:0;right:0;display:flex;justify-content:space-between;padding:0 14px;font-size:15px;color:#e3c8ff;text-shadow:0 0 8px #000}
+#sub{position:absolute;bottom:96px;left:8%;right:8%;text-align:center;font-size:18px;line-height:1.7;color:#fff;text-shadow:0 0 8px #000,0 0 4px #000;min-height:30px}
+#hintBox{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:30;display:none;background:#07050dee;border:2px solid #7c3aed;border-radius:16px;padding:12px;max-width:min(90vw,420px);text-align:center}
+#hintImg{max-width:100%;max-height:45vh;border-radius:10px;display:none}
+#hintTxt{margin-top:8px;font-size:17px;line-height:1.7;color:#fff}
+#vig{position:fixed;inset:0;pointer-events:none;z-index:12;background:radial-gradient(ellipse at center,transparent 45%,#000b 100%)}
+.zone{position:fixed;top:0;bottom:0;z-index:20;display:none;touch-action:none}
+#zoneL{left:0;width:50%}
+#zoneR{right:0;width:50%}
+#joyBase{position:fixed;width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;border:2px solid #b35cff66;background:#2a145044;display:none;pointer-events:none;z-index:21}
+#joyKnob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:#b35cff88;border:2px solid #e3c8ff99}
+.abtn{position:fixed;z-index:25;display:none;width:70px;height:70px;border-radius:50%;border:2px solid #b35cff;background:#2a1450cc;color:#fff;font-family:inherit;font-size:13px;font-weight:bold;align-items:center;justify-content:center;touch-action:none}
+#btnLight{left:18px;bottom:18px}
+#btnRun{right:18px;bottom:18px}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="vig"></div>
+
+<div id="loadscr" class="screen">
+  <div class="brand">VENOM GAMING</div>
+  <h1>المدرسة بعد الدوام</h1>
+  <div id="loadtxt">جاري تجهيز المدرسة...</div>
+</div>
+
+<div id="menu" class="screen hidden">
+  <div class="brand">VENOM GAMING</div>
+  <h1>المدرسة بعد الدوام</h1>
+  <p class="sub">حسين دخل المدرسة المهجورة مع أصحابه يصوروا فيديو. الأصحاب اختفوا، ولقى نفسه بيجري من وحش. لازم يلاقي يوسف ورامي وزياد، ويطلع من المدرسة.</p>
+  <ul class="how">
+    <li><b>الكمبيوتر:</b> WASD للحركة، والماوس للنظر، F للكشاف</li>
+    <li><b>التليفون:</b> الجويستيك في الشمال، واسحب في اليمين للنظر</li>
+  </ul>
+  <button id="startBtn" class="btn" disabled>ابدأ</button>
+</div>
+
+<div id="intro">
+  <img id="introImg" alt="">
+  <div id="introTxt"></div>
+  <button id="skipIntro">تخطي</button>
+</div>
+
+<div id="endscr" class="screen hidden">
+  <div class="brand">VENOM GAMING</div>
+  <h2 id="endTitle"></h2>
+  <p class="sub" id="endText"></p>
+  <button id="retry" class="btn">حاول تاني</button>
+</div>
+
+<div id="hud">
+  <div id="top"><span id="keysTxt">المدرسة</span><span id="friendsTxt">الأصحاب 0/3</span></div>
+  <div id="sub"></div>
+</div>
+
+<div id="hintBox">
+  <img id="hintImg" alt="">
+  <div id="hintTxt"></div>
+</div>
+
+<div id="zoneL" class="zone"></div>
+<div id="zoneR" class="zone"></div>
+<div id="joyBase"><div id="joyKnob"></div></div>
+<button id="btnLight" class="abtn">كشاف</button>
+<button id="btnRun" class="abtn">جري</button>
+
+<script>
+(function(){var app=location.host==='appassets.androidplatform.net';var b=app?'./lib/three/':'https://cdn.jsdelivr.net/npm/three@0.146.0/';
+var m={imports:{three:b+'build/three.module.js','three/addons/':b+'examples/jsm/'}};
+var s=document.createElement('script');s.type='importmap';s.textContent=JSON.stringify(m);document.head.appendChild(s);})();
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const $ = id => document.getElementById(id);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const IS_TOUCH = matchMedia('(pointer:coarse)').matches || 'ontouchstart' in window;
+
+// ---------- renderer / scene ----------
+const renderer = new THREE.WebGLRenderer({ canvas: $('c'), antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+renderer.setSize(innerWidth, innerHeight);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x03040a);
+scene.fog = new THREE.Fog(0x03040a, 6, 30);
+
+const camera = new THREE.PerspectiveCamera(72, innerWidth / innerHeight, 0.05, 200);
+camera.rotation.order = 'YXZ';
+scene.add(camera);
+scene.add(new THREE.HemisphereLight(0x3a3f6a, 0x030308, 0.55));
+
+const flash = new THREE.SpotLight(0xe8e4ff, 2.6, 30, Math.PI / 6.5, 0.45, 1.2);
+camera.add(flash);
+camera.add(flash.target);
+flash.target.position.set(0, 0, -6);
+let lightOn = true;
+
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ---------- constants ----------
+const T = 3;              // tile size (meters)
+const COLS = 11, ROWS = 9;
+const W = COLS * 2 + 1, H = ROWS * 2 + 1;
+const WALL_H = 3.2;
+
+// ---------- state ----------
+const S = { mode: 'loading', rescued: 0 };
+let yaw = 0, pitch = 0;
+let subT = 0, lastSayAt = 0;
+const timers = [];
+const input = { jx: 0, jy: 0, btnRun: false };
+const held = {};
+
+// ---------- world ----------
+const ray = new THREE.Raycaster();
+const DOWN = new THREE.Vector3(0, -1, 0);
+let grid = null;
+let houseMeshes = [];
+let floorMesh = null, wallsIM = null, lockersIM = null;
+const doors = [];          // {mesh, cx, cz, dx, dz, open, timer, friend}
+const friends = [];        // {group, name, rescued, cx, cz}
+let monster = null, monBase = new THREE.Vector3(), monState = 'patrol', monWay = null, monWayT = 0, monHeading = 0;
+let beacon = null;
+let startCell = null, exitPos = null;
+let hbT = 0, flickerT = 0;
+
+const loader = new GLTFLoader();
+const loadGLB = url => new Promise((res, rej) => loader.load(url, res, undefined, rej));
+
+// ---------- maze ----------
+const idx = (x, y) => y * W + x;
+function genMaze() {
+  const g = new Uint8Array(W * H).fill(1);
+  const stack = [[1, 1]];
+  g[idx(1, 1)] = 0;
+  const dirs = [[2, 0], [-2, 0], [0, 2], [0, -2]];
+  while (stack.length) {
+    const [x, y] = stack[stack.length - 1];
+    const opts = dirs
+      .map(d => [x + d[0], y + d[1], d])
+      .filter(([nx, ny]) => nx > 0 && ny > 0 && nx < W - 1 && ny < H - 1 && g[idx(nx, ny)] === 1);
+    if (!opts.length) { stack.pop(); continue; }
+    const [nx, ny, d] = opts[Math.floor(Math.random() * opts.length)];
+    g[idx(x + d[0] / 2, y + d[1] / 2)] = 0;
+    g[idx(nx, ny)] = 0;
+    stack.push([nx, ny]);
+  }
+  // extra openings so the middle becomes a maze with loops
+  for (let i = 0; i < 26; i++) {
+    const x = 1 + Math.floor(Math.random() * (W - 2));
+    const y = 1 + Math.floor(Math.random() * (H - 2));
+    if (g[idx(x, y)] !== 1) continue;
+    const vert = (x % 2 === 0) && g[idx(x, y - 1)] === 0 && g[idx(x, y + 1)] === 0;
+    const horz = (y % 2 === 0) && g[idx(x - 1, y)] === 0 && g[idx(x + 1, y)] === 0;
+    if (vert || horz) g[idx(x, y)] = 0;
+  }
+  return g;
+}
+const isOpen = (g, x, y) => x >= 0 && y >= 0 && x < W && y < H && g[idx(x, y)] === 0;
+const openNeighbors = (g, x, y) => [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(d => isOpen(g, x + d[0], y + d[1]));
+// tile (x,y) -> world center
+const wx = x => (x - W / 2 + 0.5) * T;
+const wz = y => (y - H / 2 + 0.5) * T;
+
+// ---------- build the school ----------
+function buildSchool() {
+  grid = genMaze();
+
+  // walls
+  const wallGeo = new THREE.BoxGeometry(T, WALL_H, T);
+  const wallMat = new THREE.MeshStandardMaterial({ color: 0x3b4150, roughness: 0.95, metalness: 0 });
+  let wallCount = 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (grid[idx(x, y)] === 1) wallCount++;
+  wallsIM = new THREE.InstancedMesh(wallGeo, wallMat, wallCount);
+  const m4 = new THREE.Matrix4();
+  let k = 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (grid[idx(x, y)] !== 1) continue;
+    m4.makeTranslation(wx(x), WALL_H / 2, wz(y));
+    wallsIM.setMatrixAt(k++, m4);
+  }
+  wallsIM.instanceMatrix.needsUpdate = true;
+  scene.add(wallsIM);
+
+  // floor and ceiling (floor is collidable, ceiling is only visual)
+  const floorGeo = new THREE.PlaneGeometry(W * T, H * T);
+  floorGeo.rotateX(-Math.PI / 2);
+  floorMesh = new THREE.Mesh(floorGeo, new THREE.MeshStandardMaterial({ color: 0x2a2e38, roughness: 0.55, metalness: 0.1 }));
+  scene.add(floorMesh);
+  const ceil = new THREE.Mesh(floorGeo.clone().rotateX(Math.PI), new THREE.MeshStandardMaterial({ color: 0x14161d, roughness: 1 }));
+  ceil.position.y = WALL_H;
+  scene.add(ceil);
+
+  // lockers along walls (collidable, flush against the wall)
+  const lockerList = [];
+  for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+    if (!isOpen(grid, x, y) || Math.random() < 0.45) continue;
+    const cx = wx(x), cz = wz(y);
+    if (isOpen(grid, x, y - 1) === false) lockerList.push([cx, cz - T / 2 + 0.3, 'z']);
+    if (isOpen(grid, x, y + 1) === false) lockerList.push([cx, cz + T / 2 - 0.3, 'z']);
+    if (isOpen(grid, x - 1, y) === false) lockerList.push([cx - T / 2 + 0.3, cz, 'x']);
+    if (isOpen(grid, x + 1, y) === false) lockerList.push([cx + T / 2 - 0.3, cz, 'x']);
+  }
+  const lockGeo = new THREE.BoxGeometry(1, 2, 0.5);
+  const lockMat = new THREE.MeshStandardMaterial({ color: 0x2c4a6b, roughness: 0.6, metalness: 0.3 });
+  lockersIM = new THREE.InstancedMesh(lockGeo, lockMat, lockerList.length);
+  lockerList.forEach((l, i) => {
+    const sx = l[2] === 'x' ? 0.5 : 1.6;
+    const sz = l[2] === 'x' ? 1.6 : 0.5;
+    m4.makeScale(sx, 1, sz);
+    m4.setPosition(l[0], 1, l[1]);
+    lockersIM.setMatrixAt(i, m4);
+  });
+  lockersIM.instanceMatrix.needsUpdate = true;
+  scene.add(lockersIM);
+
+  houseMeshes = [floorMesh, wallsIM, lockersIM];
+
+  // dead ends for doors
+  const deadEnds = [];
+  for (let y = 1; y < H - 1; y += 2) for (let x = 1; x < W - 1; x += 2) {
+    if (isOpen(grid, x, y) && openNeighbors(grid, x, y).length === 1) deadEnds.push([x, y]);
+  }
+  shuffle(deadEnds);
+  const picked = [];
+  for (const d of deadEnds) {
+    if (Math.hypot(d[0] - 1, d[1] - 1) < 8) continue;
+    if (picked.every(p => Math.hypot(p[0] - d[0], p[1] - d[1]) >= 8)) picked.push(d);
+    if (picked.length === 3) break;
+  }
+  // fallback if the maze did not give 3 far dead ends
+  for (const d of deadEnds) { if (picked.length >= 3) break; if (!picked.includes(d)) picked.push(d); }
+  const anyOpen = [];
+  for (let y = 1; y < H - 1; y += 2) for (let x = 1; x < W - 1; x += 2) if (isOpen(grid, x, y)) anyOpen.push([x, y]);
+  shuffle(anyOpen);
+  for (const d of anyOpen) { if (picked.length >= 3) break; if (!picked.includes(d) && Math.hypot(d[0] - 1, d[1] - 1) >= 6) picked.push(d); }
+
+  const names = ['يوسف', 'رامي', 'زياد'];
+  const shirts = [0x2a4d7a, 0x7a2a2a, 0x3d6b3d];
+  picked.slice(0, 3).forEach((d, i) => {
+    const [x, y] = d;
+    const nb = openNeighbors(grid, x, y)[0] || [1, 0];
+    const dx = nb[0], dz = nb[1];
+    // door on the edge of the dead end, facing the corridor
+    const doorMat = new THREE.MeshStandardMaterial({ color: 0x5a3a1e, roughness: 0.7 });
+    const size = dx !== 0 ? [0.3, WALL_H - 0.2, T - 0.4] : [T - 0.4, WALL_H - 0.2, 0.3];
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(...size), doorMat);
+    const ex = wx(x) + dx * (T / 2), ez = wz(y) + dz * (T / 2);
+    mesh.position.set(ex, (WALL_H - 0.2) / 2, ez);
+    scene.add(mesh);
+    houseMeshes.push(mesh);
+    doors.push({ mesh, cx: ex, cz: ez, tx: wx(x), tz: wz(y), open: false, timer: 0, idx: i, cellX: x, cellY: y });
+
+    // friend standing inside the dead end
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.9, 12),
+      new THREE.MeshStandardMaterial({ color: shirts[i], roughness: 0.8 }));
+    body.position.y = 0.7;
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 14, 10),
+      new THREE.MeshStandardMaterial({ color: 0xc9a383, roughness: 0.7 }));
+    head.position.y = 1.32;
+    g.add(body, head);
+    g.add(nameSprite(names[i]));
+    g.position.set(wx(x), 0, wz(y));
+    g.visible = true;
+    scene.add(g);
+    friends.push({ group: g, name: names[i], rescued: false, door: doors[doors.length - 1] });
+  });
+
+  // start and exit (exit is the entrance we came in from)
+  startCell = [1, 1];
+  exitPos = new THREE.Vector3(wx(1), 0, wz(1));
+  const exitLight = new THREE.PointLight(0x7dffb0, 1.2, 6);
+  exitLight.position.set(exitPos.x, 2.4, exitPos.z);
+  scene.add(exitLight);
+}
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function nameSprite(text) {
+  const cvs = document.createElement('canvas');
+  cvs.width = 256; cvs.height = 96;
+  const ctx = cvs.getContext('2d');
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(0, 0, 256, 96);
+  ctx.fillStyle = '#f5d978';
+  ctx.font = 'bold 48px Tahoma, Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, 128, 50);
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cvs), transparent: true }));
+  sprite.scale.set(1.1, 0.42, 1);
+  sprite.position.y = 1.9;
+  return sprite;
+}
+
+// ---------- ray helpers (same approach as the house game) ----------
+function rayHit(origin, dir, maxDist) {
+  ray.set(origin, dir.clone().normalize());
+  ray.far = maxDist;
+  const hits = ray.intersectObjects(houseMeshes, false);
+  return hits.length ? hits[0] : null;
+}
+function blocked(origin, dir, dist) {
+  return rayHit(origin, dir, dist) !== null;
+}
+function floorAt(x, z, fromY) {
+  ray.set(new THREE.Vector3(x, fromY, z), DOWN);
+  ray.far = fromY + 6;
+  const hits = ray.intersectObjects(houseMeshes, false);
+  for (const h of hits) {
+    if (!h.face) continue;
+    const n = h.face.normal.clone().transformDirection(h.object.matrixWorld);
+    if (n.y > 0.5) return h.point.y;
+  }
+  return null;
+}
+
+// ---------- audio ----------
+let AC = null;
+function initAudio() {
+  try {
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.type = 'sine'; o.frequency.value = 42; g.gain.value = 0.05;
+    o.connect(g).connect(AC.destination); o.start();
+  } catch (e) { AC = null; }
+}
+function thump(vol, freq) {
+  if (!AC) return;
+  try {
+    const o = AC.createOscillator(), g = AC.createGain();
+    const t = AC.currentTime;
+    o.type = 'sine';
+    o.frequency.setValueAtTime(freq, t);
+    o.frequency.exponentialRampToValueAtTime(40, t + 0.25);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    o.connect(g).connect(AC.destination);
+    o.start(t); o.stop(t + 0.32);
+  } catch (e) {}
+}
+
+// ---------- subtitles and hints ----------
+function say(text, sec = 3.5) {
+  $('sub').textContent = text;
+  subT = sec;
+  lastSayAt = performance.now();
+}
+function showHint(img, text, sec = 6) {
+  const box = $('hintBox');
+  $('hintTxt').textContent = text;
+  const im = $('hintImg');
+  im.onerror = () => { im.style.display = 'none'; };
+  im.onload = () => { im.style.display = 'block'; };
+  im.src = img;
+  box.style.display = 'block';
+  timers.push(setTimeout(() => { box.style.display = 'none'; im.style.display = 'none'; }, sec * 1000));
+}
+
+// ---------- input ----------
+window.addEventListener('keydown', e => {
+  held[e.code] = true;
+  if (e.code === 'KeyF' && S.mode === 'play') lightOn = !lightOn;
+});
+window.addEventListener('keyup', e => { held[e.code] = false; });
+document.addEventListener('mousemove', e => {
+  if (document.pointerLockElement === renderer.domElement) {
+    yaw -= e.movementX * 0.0022;
+    pitch = clamp(pitch - e.movementY * 0.0022, -1.2, 1.2);
+  }
+});
+renderer.domElement.addEventListener('click', () => {
+  if (!IS_TOUCH && S.mode === 'play') renderer.domElement.requestPointerLock();
+});
+
+const zoneL = $('zoneL'), zoneR = $('zoneR'), jb = $('joyBase'), jk = $('joyKnob');
+let jt = null, jo = { x: 0, y: 0 }, lt = null, lx = 0, ly = 0;
+zoneL.addEventListener('pointerdown', e => {
+  if (jt !== null) return;
+  jt = e.pointerId; jo = { x: e.clientX, y: e.clientY };
+  zoneL.setPointerCapture(e.pointerId);
+  jb.style.display = 'block'; jb.style.left = e.clientX + 'px'; jb.style.top = e.clientY + 'px';
+  jk.style.transform = 'translate(0,0)';
+  e.preventDefault();
+});
+zoneL.addEventListener('pointermove', e => {
+  if (e.pointerId !== jt) return;
+  const dx = e.clientX - jo.x, dy = e.clientY - jo.y;
+  const R = 55, l = Math.hypot(dx, dy), k = l > R ? R / l : 1;
+  input.jx = dx * k / R; input.jy = dy * k / R;
+  jk.style.transform = `translate(${dx * k}px,${dy * k}px)`;
+});
+const endJoy = e => {
+  if (e.pointerId !== jt) return;
+  jt = null; input.jx = 0; input.jy = 0; jb.style.display = 'none';
+};
+zoneL.addEventListener('pointerup', endJoy);
+zoneL.addEventListener('pointercancel', endJoy);
+zoneR.addEventListener('pointerdown', e => {
+  if (lt !== null) return;
+  lt = e.pointerId; lx = e.clientX; ly = e.clientY;
+  zoneR.setPointerCapture(e.pointerId);
+  e.preventDefault();
+});
+zoneR.addEventListener('pointermove', e => {
+  if (e.pointerId !== lt) return;
+  yaw -= (e.clientX - lx) * 0.005;
+  pitch = clamp(pitch - (e.clientY - ly) * 0.005, -1.2, 1.2);
+  lx = e.clientX; ly = e.clientY;
+});
+const endLook = e => { if (e.pointerId === lt) lt = null; };
+zoneR.addEventListener('pointerup', endLook);
+zoneR.addEventListener('pointercancel', endLook);
+$('btnLight').addEventListener('pointerdown', e => { if (S.mode === 'play') lightOn = !lightOn; e.preventDefault(); });
+$('btnRun').addEventListener('pointerdown', e => { input.btnRun = true; e.preventDefault(); });
+$('btnRun').addEventListener('pointerup', () => { input.btnRun = false; });
+$('btnRun').addEventListener('pointercancel', () => { input.btnRun = false; });
+
+// ---------- movement ----------
+function moveWithCollision(p, dx, dz, R) {
+  if (dx) {
+    const o = new THREE.Vector3(p.x, p.y - 0.8, p.z);
+    if (!blocked(o, new THREE.Vector3(Math.sign(dx), 0, 0), Math.abs(dx) + R)) p.x += dx;
+  }
+  if (dz) {
+    const o = new THREE.Vector3(p.x, p.y - 0.8, p.z);
+    if (!blocked(o, new THREE.Vector3(0, 0, Math.sign(dz)), Math.abs(dz) + R)) p.z += dz;
+  }
+}
+function followFloor(dt) {
+  const fy = floorAt(camera.position.x, camera.position.z, camera.position.y + 0.6);
+  if (fy !== null) camera.position.y += (fy + 1.6 - camera.position.y) * Math.min(1, dt * 10);
+}
+function updatePlayer(dt) {
+  const run = input.btnRun || held.ShiftLeft || held.ShiftRight;
+  let f = (held.KeyW || held.ArrowUp ? 1 : 0) - (held.KeyS || held.ArrowDown ? 1 : 0);
+  let r = (held.KeyD || held.ArrowRight ? 1 : 0) - (held.KeyA || held.ArrowLeft ? 1 : 0);
+  f += -input.jy; r += input.jx;
+  const len = Math.hypot(f, r);
+  if (len > 1) { f /= len; r /= len; }
+  const sp = (run ? 3.4 : 2.1) * dt;
+  const fx = -Math.sin(yaw), fz = -Math.cos(yaw);
+  const rx = Math.cos(yaw), rz = -Math.sin(yaw);
+  moveWithCollision(camera.position, (fx * f + rx * r) * sp, (fz * f + rz * r) * sp, 0.3);
+  followFloor(dt);
+  camera.rotation.set(pitch, yaw, 0, 'YXZ');
+}
+
+// ---------- doors and friends ----------
+function updateDoors(dt) {
+  for (const d of doors) {
+    if (d.open) continue;
+    const dist = Math.hypot(d.cx - camera.position.x, d.cz - camera.position.z);
+    if (dist < 2.2) {
+      d.timer += dt;
+      if (d.timer >= 1.2) {
+        d.open = true;
+        d.mesh.visible = false;
+        const i = houseMeshes.indexOf(d.mesh);
+        if (i >= 0) houseMeshes.splice(i, 1);
+        say('الباب اتفتح... في حد جوه', 3);
+      }
+    } else {
+      d.timer = 0;
+      if (dist < 4 && performance.now() - lastSayAt > 5000) say('باب مقفول... لازم أفتحه', 2.5);
+    }
+  }
+}
+
+function updateFriends() {
+  for (const f of friends) {
+    if (f.rescued || !f.door.open) continue;
+    const dist = Math.hypot(f.group.position.x - camera.position.x, f.group.position.z - camera.position.z);
+    if (dist < 1.6) {
+      f.rescued = true;
+      S.rescued++;
+      f.group.visible = false;
+      say(`${f.name}: حسين! الحمد لله إنك جيت`, 4);
+      rescueHint();
+    }
+  }
+}
+
+function rescueHint() {
+  const left = friends.filter(f => !f.rescued);
+  if (!left.length) return;
+  // the next door to show is the first door whose friend is not rescued yet
+  const nextIdx = friends.indexOf(left[0]);
+  const next = doors[nextIdx];
+  if (next && beacon === null) {
+    beacon = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 6, 10),
+      new THREE.MeshBasicMaterial({ color: 0xffd36b, transparent: true, opacity: 0.55 }));
+    beacon.position.set(next.cx, 3, next.cz);
+    scene.add(beacon);
+  }
+  const hintNum = S.rescued;
+  const text = S.rescued === 1
+    ? 'رامي: افتكر... زياد قال إنه شاف ضوء ورا الباب اللي عليه العامود الذهبي'
+    : 'زياد: مش فاكر غير إن الباب الأخير كان في آخر الممر';
+  showHint(`hint_${hintNum}.png`, text, 7);
+  // beacon position update for the next target
+  if (beacon && next) beacon.position.set(next.cx, 3, next.cz);
+}
+
+// ---------- monster ----------
+function updateMonster(dt) {
+  if (!monster) return;
+  const mp = monster.position;
+  const pp = camera.position;
+  const dx = pp.x - mp.x, dz = pp.z - mp.z;
+  const dist = Math.hypot(dx, dz);
+
+  const eye = new THREE.Vector3(mp.x, mp.y + 1.6, mp.z);
+  const tgt = new THREE.Vector3(pp.x, pp.y - 0.2, pp.z);
+  const toT = tgt.clone().sub(eye);
+  const sees = dist < 22 && !blocked(eye, toT, toT.length() - 0.1);
+
+  if (sees || dist < 7) {
+    if (monState !== 'chase') { monState = 'chase'; thump(0.35, 60); }
+  } else if (monState === 'chase' && dist > 28) {
+    monState = 'patrol'; monWay = null;
+  }
+
+  let tx, tz;
+  if (monState === 'chase') {
+    tx = pp.x; tz = pp.z;
+  } else {
+    monWayT -= dt;
+    if (!monWay || monWayT <= 0 || Math.hypot(monWay.x - mp.x, monWay.z - mp.z) < 0.8) {
+      monWay = randomFloor(0, [mp]);
+      monWayT = 12;
+    }
+    tx = monWay.x; tz = monWay.z;
+  }
+
+  const speed = (monState === 'chase' ? 2.4 : 1.0) * dt;
+  const base = Math.atan2(tz - mp.z, tx - mp.x);
+  for (const a of [0, 0.9, -0.9, 1.8, -1.8]) {
+    const ax = Math.cos(base + a), az = Math.sin(base + a);
+    const o = new THREE.Vector3(mp.x, mp.y + 1.0, mp.z);
+    if (!blocked(o, new THREE.Vector3(ax, 0, az), speed + 0.4)) {
+      mp.x += ax * speed; mp.z += az * speed;
+      monHeading = Math.atan2(ax, az);
+      break;
+    }
+  }
+  monster.rotation.y = monHeading;
+  const fy = floorAt(mp.x, mp.z, mp.y + 2);
+  if (fy !== null) mp.y = fy;
+
+  if (dist < 1.0) over(false, 'الوحش لحقك', 'حسين اتمسك، والأصحاب فضلوا جوه.');
+}
+
+function randomFloor(minDist, refs) {
+  let fallback = null;
+  for (let i = 0; i < 300; i++) {
+    const cx = 1 + Math.floor(Math.random() * (W - 2));
+    const cy = 1 + Math.floor(Math.random() * (H - 2));
+    if (!isOpen(grid, cx, cy)) continue;
+    const x = wx(cx), z = wz(cy);
+    const fy = floorAt(x, z, WALL_H + 0.5);
+    if (fy === null) continue;
+    const p = new THREE.Vector3(x, fy, z);
+    if (!fallback) fallback = p;
+    if (refs.every(q => Math.hypot(q.x - x, q.z - z) >= minDist)) return p;
+  }
+  return fallback || new THREE.Vector3(0, 0, 0);
+}
+
+// ---------- flow ----------
+function over(win, title, text) {
+  if (S.mode !== 'play') return;
+  S.mode = 'over';
+  timers.forEach(clearTimeout);
+  if (AC) thump(0.4, 50);
+  $('endTitle').textContent = title;
+  $('endText').textContent = text;
+  $('endscr').classList.remove('hidden');
+  $('hud').style.display = 'none';
+  $('hintBox').style.display = 'none';
+  if (document.pointerLockElement) document.exitPointerLock();
+}
+
+function placeEntities() {
+  const start = new THREE.Vector3(wx(startCell[0]), 0, wz(startCell[1]));
+  const fy = floorAt(start.x, start.z, WALL_H + 0.5);
+  start.y = fy === null ? 0 : fy;
+  camera.position.set(start.x, start.y + 1.6, start.z);
+  yaw = 0; pitch = 0;
+
+  // monster far from the player
+  const mpos = randomFloor(20, [start]);
+  monster.position.set(mpos.x + monBase.x, mpos.y + monBase.y, mpos.z + monBase.z);
+  monState = 'patrol'; monWay = null;
+}
+
+function startGame() {
+  initAudio();
+  placeEntities();
+  S.mode = 'play';
+  S.rescued = 0;
+  $('menu').classList.add('hidden');
+  $('loadscr').classList.add('hidden');
+  $('hud').style.display = 'block';
+  if (IS_TOUCH) {
+    zoneL.style.display = 'block';
+    zoneR.style.display = 'block';
+    $('btnLight').style.display = 'flex';
+    $('btnRun').style.display = 'flex';
+  } else {
+    renderer.domElement.requestPointerLock();
+  }
+  say('حسين: يوسف؟ رامي؟ زياد؟... أنا جيت', 4);
+}
+
+function updateGame(dt) {
+  updatePlayer(dt);
+  updateMonster(dt);
+  updateDoors(dt);
+  updateFriends();
+
+  // exit
+  if (S.rescued >= 3 && Math.hypot(exitPos.x - camera.position.x, exitPos.z - camera.position.z) < 2) {
+    over(true, 'خرجوا من المدرسة', 'حسين وأصحابه طلعوا، والفيديو اتصور... بس فيه حاجة اتبعتهم لبيوتهم.');
+    return;
+  }
+
+  // tension
+  if (monState === 'chase') {
+    hbT -= dt;
+    if (hbT <= 0) {
+      thump(0.5, 90);
+      setTimeout(() => thump(0.35, 80), 180);
+      hbT = 0.75;
+    }
+    flickerT -= dt;
+    if (flickerT <= 0) { flickerT = 0.2 + Math.random() * 0.6; flash.intensity = Math.random() < 0.3 ? 0.4 : 2.6; }
+  } else {
+    hbT = 0;
+    flash.intensity = 2.6;
+  }
+
+  flash.visible = lightOn;
+  if (subT > 0) {
+    subT -= dt;
+    if (subT <= 0) $('sub').textContent = '';
+  }
+  $('keysTxt').textContent = 'المدرسة';
+  $('friendsTxt').textContent = `الأصحاب ${S.rescued}/3`;
+}
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (S.mode === 'play') updateGame(dt);
+  if (beacon) beacon.rotation.y += dt * 0.5;
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+
+// ---------- intro (4 pictures) ----------
+const INTRO = [
+  { img: 'intro_1.png', txt: 'حسين وأصحابه قدام المدرسة المهجورة، ومعاهم الكاميرا، عشان يصوروا فيديو لليوتيوب.' },
+  { img: 'intro_2.png', txt: 'الممر ضلمة... ومعاهم كشافات بس.' },
+  { img: 'intro_3.png', txt: 'الأصحاب اختفوا فجأة، والكشاف واقع على الأرض لوحده.' },
+  { img: 'intro_4.png', txt: 'حسين لوحده دلوقتي... ومش لوحده.' },
+];
+function playIntro(done) {
+  const box = $('intro');
+  box.style.display = 'flex';
+  let i = 0;
+  let stopped = false;
+  const finish = () => {
+    if (stopped) return;
+    stopped = true;
+    timers.forEach(clearTimeout);
+    box.style.display = 'none';
+    done();
+  };
+  const showOne = () => {
+    if (i >= INTRO.length) return finish();
+    const im = $('introImg');
+    im.onerror = () => { im.style.display = 'none'; };
+    im.onload = () => { im.style.display = 'block'; };
+    im.src = INTRO[i].img;
+    $('introTxt').textContent = INTRO[i].txt;
+    i++;
+    timers.push(setTimeout(showOne, 5000));
+  };
+  $('skipIntro').onclick = finish;
+  showOne();
+}
+
+// ---------- boot ----------
+async function boot() {
+  try {
+    buildSchool();
+    $('loadtxt').textContent = 'جاري تحميل الوحش...';
+    const mg = await loadGLB('wendigo.glb');
+    monster = mg.scene;
+    scene.add(monster);
+    // fit monster to about 2.6 m tall, feet at y = 0
+    monster.position.set(0, 0, 0);
+    monster.updateMatrixWorld(true);
+    let b = new THREE.Box3().setFromObject(monster);
+    const h = Math.max(b.max.y - b.min.y, 0.001);
+    monster.scale.setScalar(2.6 / h);
+    monster.updateMatrixWorld(true);
+    b = new THREE.Box3().setFromObject(monster);
+    const c = b.getCenter(new THREE.Vector3());
+    monBase.set(-c.x, -b.min.y, -c.z);
+    monster.position.copy(monBase);
+    monster.traverse(o => { if (o.isMesh && o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { m.side = THREE.DoubleSide; }); });
+
+    S.mode = 'menu';
+    $('loadscr').classList.add('hidden');
+    $('menu').classList.remove('hidden');
+    $('startBtn').disabled = false;
+  } catch (err) {
+    console.error(err);
+    $('loadtxt').textContent = 'ما قدرناش نحمل الملفات. تأكد إن wendigo.glb موجود جنب الصفحة دي.';
+  }
+}
+
+$('startBtn').addEventListener('click', () => {
+  if (S.mode !== 'menu') return;
+  $('menu').classList.add('hidden');
+  S.mode = 'intro';
+  playIntro(() => {
+    S.mode = 'menu';
+    startGame();
+  });
+});
+$('retry').addEventListener('click', () => location.reload());
+
+boot();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
